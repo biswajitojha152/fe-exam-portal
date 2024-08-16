@@ -1,11 +1,17 @@
 import React from "react";
 
-import { Box, Paper, Typography, Grid } from "@mui/material";
+import { Box, Paper, Typography, Grid, IconButton } from "@mui/material";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import AddCategoryFormDialog from "./AddCategoryFormDialog";
+
 import FolderIcon from "@mui/icons-material/Folder";
+import AddIcon from "@mui/icons-material/Add";
 
 import TopViewNav from "../../components/TopViewNav";
+import LoadingComponent from "../../components/LoadingComponent";
+
+import { useGetAllCategoryQuery } from "../../services/category";
 
 const topViewNavData = {
   navData: [
@@ -21,22 +27,17 @@ const topViewNavData = {
   },
 };
 
-const categoryList = [
-  {
-    name: "Programming",
-    count: 10,
-  },
-  {
-    name: "General Knowlege",
-    count: 10,
-  },
-  {
-    name: "Politics",
-    count: 10,
-  },
-];
-
 const Category = () => {
+  const { data: categoryList = [], isLoading } = useGetAllCategoryQuery();
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <React.Fragment>
       <TopViewNav topViewNavData={topViewNavData} />
@@ -64,14 +65,32 @@ const Category = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    {category.count}
+                    {category.quizCount}
                   </Typography>
                 </Paper>
               </Grid>
             );
           })}
         </Grid>
+        <IconButton
+          sx={{
+            backgroundColor: (theme) => theme.palette.primary.main,
+            color: "white",
+            position: "fixed",
+            bottom: 10,
+            right: 10,
+            "&:hover": {
+              backgroundColor: (theme) => theme.palette.primary.light,
+            },
+          }}
+          size="small"
+          onClick={handleOpen}
+        >
+          <AddIcon fontSize="large" />
+        </IconButton>
       </Box>
+      <AddCategoryFormDialog open={open} handleClose={handleClose} />
+      <LoadingComponent open={isLoading} />
     </React.Fragment>
   );
 };

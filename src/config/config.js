@@ -3,6 +3,8 @@ const config = Object.freeze({
   apiName: {
     login: "api/auth/signIn",
     getDashboardData: "api/dashboard/getDashboardSummary",
+    getAllCategory: "api/category/getAllCategories",
+    createCategory: "api/category/saveCategory",
   },
 });
 
