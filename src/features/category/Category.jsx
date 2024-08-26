@@ -29,6 +29,7 @@ const topViewNavData = {
 
 const Category = () => {
   const { data: categoryList = [], isLoading } = useGetAllCategoryQuery();
+
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = () => {
@@ -48,10 +49,7 @@ const Category = () => {
               <Grid item xs={12} sm={6} md={3} xl={2} key={category.name}>
                 <Paper
                   sx={{
-                    p: {
-                      xs: 1,
-                      md: 2,
-                    },
+                    p: 2,
                     display: "flex",
                     justifyContent: "space-between",
                   }}

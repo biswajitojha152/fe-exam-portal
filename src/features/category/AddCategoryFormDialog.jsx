@@ -6,23 +6,47 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import LoadingComponent from "../../components/LoadingComponent";
+import SnackAlert from "../../components/Alert";
+
 import { useCreateCategoryMutation } from "../../services/category";
 
 const AddCategoryFormDialog = ({ open, handleClose }) => {
   const [createCategory, createCategoryRes] = useCreateCategoryMutation();
+  const [snack, setSnack] = React.useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
   const [categoryName, setCategoryName] = React.useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!Boolean(categoryName.trim())) {
+      return setSnack({
+        open: true,
+        message: "Category Name is Required.",
+        severity: "error",
+      });
+    }
     createCategory({
       name: categoryName,
     })
       .unwrap()
       .then((res) => {
-        alert(res.message);
+        setSnack({
+          open: true,
+          message: res.message,
+          severity: "success",
+        });
+        handleClose();
       })
-      .catch((err) => alert(err.data.message || err.data));
-    handleClose();
+      .catch((err) => {
+        setSnack({
+          open: true,
+          message: err.data?.message || err.data,
+          severity: "error",
+        });
+      });
   };
 
   React.useEffect(() => {
@@ -44,11 +68,10 @@ const AddCategoryFormDialog = ({ open, handleClose }) => {
         <DialogContent>
           <TextField
             autoFocus
-            required
             margin="dense"
             id="name"
             name="category"
-            label="Category Name"
+            label="Category Name *"
             type="text"
             fullWidth
             variant="standard"
@@ -65,6 +88,7 @@ const AddCategoryFormDialog = ({ open, handleClose }) => {
         </DialogActions>
       </Dialog>
       <LoadingComponent open={createCategoryRes.isLoading} />
+      <SnackAlert snack={snack} setSnack={setSnack} />
     </React.Fragment>
   );
 };

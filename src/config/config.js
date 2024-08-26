@@ -5,6 +5,8 @@ const config = Object.freeze({
     getDashboardData: "api/dashboard/getDashboardSummary",
     getAllCategory: "api/category/getAllCategories",
     createCategory: "api/category/saveCategory",
+    getAllQuiz: "api/quiz/getAllQuiz",
+    createQuiz: "api/quiz/saveQuiz",
   },
 });
 
