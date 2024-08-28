@@ -91,7 +91,7 @@ const SideBar = () => {
                 disablePadding
                 sx={{
                   background:
-                    location.pathname === menuItem.path
+                    `/${location.pathname.split("/")[1]}` === menuItem.path
                       ? "hsl(0, 0%, 85%)"
                       : "transparent",
                 }}

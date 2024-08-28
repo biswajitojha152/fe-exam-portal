@@ -13,6 +13,7 @@ const Dashboard = React.lazy(() => import("./features/dashboard/Dashboard"));
 
 const Category = React.lazy(() => import("./features/category/Category"));
 const Quiz = React.lazy(() => import("./features/quiz/Quiz"));
+const ViewQuiz = React.lazy(() => import("./features/quiz/ViewQuiz"));
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/category" element={<Category />} />
             <Route path="/quiz" element={<Quiz />} />
+            <Route path="/quiz/:quizId" element={<ViewQuiz />} />
           </Route>
         </Routes>
       </React.Suspense>

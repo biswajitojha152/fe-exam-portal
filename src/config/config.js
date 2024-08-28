@@ -6,7 +6,10 @@ const config = Object.freeze({
     getAllCategory: "api/category/getAllCategories",
     createCategory: "api/category/saveCategory",
     getAllQuiz: "api/quiz/getAllQuiz",
+    getQuizById: "api/quiz/getQuizById",
     createQuiz: "api/quiz/saveQuiz",
+    updateQuiz: "api/quiz/updateQuiz",
+    updateQuizStatus: "api/quiz/updateQuizStatus",
   },
 });
 

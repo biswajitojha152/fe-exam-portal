@@ -9,11 +9,10 @@ const UserLayout = () => {
   return (
     <React.Fragment>
       <Header />
-      <Box sx={{ display: "flex" }}>
+      <Box>
         <SideBar />
         <Box
           sx={{
-            flexGrow: 1,
             p: {
               xs: 1,
               lg: 3,

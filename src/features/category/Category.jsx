@@ -1,6 +1,8 @@
 import React from "react";
 
-import { Box, Paper, Typography, Grid, IconButton } from "@mui/material";
+import { Box, Paper, Typography, Grid, IconButton, Link } from "@mui/material";
+
+import { Link as RouterLink } from "react-router-dom";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddCategoryFormDialog from "./AddCategoryFormDialog";
@@ -54,9 +56,18 @@ const Category = () => {
                     justifyContent: "space-between",
                   }}
                 >
-                  <Typography sx={{ fontWeight: "bold" }}>
+                  <Link
+                    underline="hover"
+                    component={RouterLink}
+                    to={`/quiz`}
+                    sx={{
+                      fontWeight: "bold",
+                      letterSpacing: 1,
+                      fontFamily: "sans-serif",
+                    }}
+                  >
                     {category.name}
-                  </Typography>
+                  </Link>
                   <Typography
                     sx={{
                       color: (theme) => theme.palette.warning.main,

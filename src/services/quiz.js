@@ -18,8 +18,37 @@ const quizApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["getAllQuiz"],
     }),
+    getQuizById: build.query({
+      query: (payload) => ({
+        url: config.apiName.getQuizById + `/${payload}`,
+        method: "GET",
+      }),
+      providesTags: ["getQuizById"],
+    }),
+    updateQuiz: build.mutation({
+      query: (payload) => ({
+        url: config.apiName.updateQuiz,
+        method: "PUT",
+        data: payload,
+      }),
+      invalidatesTags: ["getAllQuiz", "getQuizById"],
+    }),
+    updateQuizStatus: build.mutation({
+      query: (payload) => ({
+        url: config.apiName.updateQuizStatus,
+        method: "PUT",
+        data: payload,
+      }),
+      invalidatesTags: ["getAllQuiz", "getQuizById"],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetAllQuizQuery, useCreateQuizMutation } = quizApi;
+export const {
+  useGetAllQuizQuery,
+  useCreateQuizMutation,
+  useUpdateQuizMutation,
+  useUpdateQuizStatusMutation,
+  useGetQuizByIdQuery,
+} = quizApi;

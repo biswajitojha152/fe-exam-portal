@@ -36,6 +36,8 @@ const AddQuizFormDialog = ({ open, handleClose }) => {
     event.preventDefault();
     if (
       !Boolean(formData.quizName.trim()) ||
+      !Boolean(formData.description.trim()) ||
+      !Boolean(formData.category) ||
       !Boolean(formData.description.trim())
     ) {
       return setSnack({
@@ -44,8 +46,11 @@ const AddQuizFormDialog = ({ open, handleClose }) => {
         severity: "error",
       });
     }
+
     createQuiz({
       name: formData.quizName,
+      categoryId: formData.category.id,
+      description: formData.description,
     })
       .unwrap()
       .then((res) => {
@@ -66,7 +71,12 @@ const AddQuizFormDialog = ({ open, handleClose }) => {
   };
 
   React.useEffect(() => {
-    setFormData({ quizName: "", description: "" });
+    setFormData({
+      quizName: "",
+      description: "",
+      category: null,
+      categoryInputVal: "",
+    });
   }, [open]);
 
   return (
@@ -113,11 +123,16 @@ const AddQuizFormDialog = ({ open, handleClose }) => {
                 autoComplete="off"
               /> */}
               <Autocomplete
-                id="selectCategory"
                 options={categoryList}
                 value={formData.category}
                 onChange={(e, newVal) =>
                   handleChange({ target: { name: "category", value: newVal } })
+                }
+                inputValue={formData.categoryInputVal}
+                onInputChange={(e, newVal) =>
+                  handleChange({
+                    target: { name: "categoryInputVal", value: newVal },
+                  })
                 }
                 getOptionLabel={(option) => option.name}
                 clearOnEscape
