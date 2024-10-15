@@ -67,7 +67,7 @@ const topViewNavData = {
 
 const Quiz = () => {
   const { data: quizList = [], isLoading } = useGetAllQuizQuery();
-  const [updateQuizStatus, updateQuizStatusRes] = useUpdateQuizStatusMutation();
+  const [updateQuizStatus] = useUpdateQuizStatusMutation();
   const [snack, setSnack] = React.useState({
     open: false,
     message: "",
@@ -166,7 +166,7 @@ const Quiz = () => {
         </IconButton>
       </Box>
       <AddQuizFormDialog open={open} handleClose={handleClose} />
-      <LoadingComponent open={isLoading || updateQuizStatusRes.isLoading} />
+      <LoadingComponent open={isLoading} />
       <SnackAlert snack={snack} setSnack={setSnack} />
     </React.Fragment>
   );

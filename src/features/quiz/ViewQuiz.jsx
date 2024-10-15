@@ -23,6 +23,7 @@ import {
   useGetQuizByIdQuery,
   useUpdateQuizMutation,
 } from "../../services/quiz";
+import AddQuestionForm from "./AddQuestionForm";
 
 const ViewQuiz = () => {
   const { quizId } = useParams("quizId");
@@ -133,13 +134,14 @@ const ViewQuiz = () => {
           >
             Update
           </Button>
-          <Paper sx={{ p: 2 }}>
+          <Paper sx={{ p: 2, my: 1 }}>
             <Typography variant="h5" gutterBottom>
               Update Quiz
             </Typography>
             <Grid container columnSpacing={2}>
               <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
+                  disabled
                   margin="dense"
                   label="Quiz Name *"
                   variant="standard"
@@ -190,6 +192,7 @@ const ViewQuiz = () => {
               </Grid>
             </Grid>
           </Paper>
+          <AddQuestionForm />
         </Box>
       </Box>
       <LoadingComponent open={isLoading || updateQuizRes.isLoading} />
