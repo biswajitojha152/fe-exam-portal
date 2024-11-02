@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Divider,
   Grid,
   Paper,
   TextField,
@@ -20,13 +21,18 @@ import { useParams } from "react-router-dom";
 
 import { useGetAllCategoryQuery } from "../../services/category";
 import {
+  useGetAllQuestionsQuery,
   useGetQuizByIdQuery,
   useUpdateQuizMutation,
 } from "../../services/quiz";
 import AddQuestionForm from "./AddQuestionForm";
+import DOMPurify from "dompurify";
 
 const ViewQuiz = () => {
   const { quizId } = useParams("quizId");
+  const { data: questionList = [] } = useGetAllQuestionsQuery(quizId, {
+    skip: !Boolean(quizId),
+  });
   const { data: quizDetails = {}, isLoading } = useGetQuizByIdQuery(quizId);
   const { data: categoryList = [] } = useGetAllCategoryQuery();
   const [updateQuiz, updateQuizRes] = useUpdateQuizMutation();
@@ -135,9 +141,9 @@ const ViewQuiz = () => {
             Update
           </Button>
           <Paper sx={{ p: 2, my: 1 }}>
-            <Typography variant="h5" gutterBottom>
+            {/* <Typography variant="h5" gutterBottom>
               Update Quiz
-            </Typography>
+            </Typography> */}
             <Grid container columnSpacing={2}>
               <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TextField
@@ -193,6 +199,63 @@ const ViewQuiz = () => {
             </Grid>
           </Paper>
           <AddQuestionForm />
+          {questionList.map((question, index) => {
+            return (
+              <Paper key={question.id} sx={{ my: 1, p: 2 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 1.5,
+                  }}
+                >
+                  <Box>
+                    <Typography>{`Q${index + 1}.`}</Typography>
+                  </Box>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Typography
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(question.name),
+                      }}
+                      sx={{ mb: 2 }}
+                    />
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <Typography>
+                          <span style={{ marginRight: 10 }}>{`1)`}</span>
+                          {question.option1}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography>
+                          <span style={{ marginRight: 10 }}>{`2)`}</span>
+                          {question.option2}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography>
+                          <span style={{ marginRight: 10 }}>{`3)`}</span>
+                          {question.option3}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography>
+                          <span style={{ marginRight: 10 }}>{`4)`}</span>
+                          {question.option4}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Box>
+                <Divider sx={{ my: 2 }} />
+                <Box>
+                  <Typography>
+                    <span style={{ marginRight: 10 }}>Answer:</span>
+                    {question.answer}
+                  </Typography>
+                </Box>
+              </Paper>
+            );
+          })}
         </Box>
       </Box>
       <LoadingComponent open={isLoading || updateQuizRes.isLoading} />

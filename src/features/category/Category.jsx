@@ -15,20 +15,6 @@ import LoadingComponent from "../../components/LoadingComponent";
 
 import { useGetAllCategoryQuery } from "../../services/category";
 
-const topViewNavData = {
-  navData: [
-    {
-      label: "Dashobard",
-      path: "/dashboard",
-      icon: <DashboardIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-    },
-  ],
-  data: {
-    label: "Category",
-    icon: <FolderIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-  },
-};
-
 const Category = () => {
   const { data: categoryList = [], isLoading } = useGetAllCategoryQuery();
 
@@ -39,6 +25,26 @@ const Category = () => {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const topViewNavData = {
+    navData: [
+      {
+        label: "Dashobard",
+        path: "/dashboard",
+        icon: <DashboardIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
+      },
+    ],
+    data: {
+      label: "Category",
+      icon: <FolderIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
+    },
+    addOn: {
+      isButton: true,
+      buttonText: "Add Quiz",
+      startIcon: <AddIcon />,
+      handleClick: handleOpen,
+    },
   };
 
   return (

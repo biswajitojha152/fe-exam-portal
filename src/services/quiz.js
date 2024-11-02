@@ -41,6 +41,21 @@ const quizApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["getAllQuiz", "getQuizById"],
     }),
+    saveQuestion: build.mutation({
+      query: (payload) => ({
+        url: config.apiName.saveQuestion,
+        method: "POST",
+        data: payload,
+      }),
+      invalidatesTags: ["getAllQuestions"],
+    }),
+    getAllQuestions: build.query({
+      query: (payload) => ({
+        url: `${config.apiName.getAllQuestions}/${payload}`,
+        method: "GET",
+      }),
+      providesTags: ["getAllQuestions"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -51,4 +66,6 @@ export const {
   useUpdateQuizMutation,
   useUpdateQuizStatusMutation,
   useGetQuizByIdQuery,
+  useSaveQuestionMutation,
+  useGetAllQuestionsQuery,
 } = quizApi;

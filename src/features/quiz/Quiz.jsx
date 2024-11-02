@@ -51,20 +51,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const topViewNavData = {
-  navData: [
-    {
-      label: "Dashobard",
-      path: "/dashboard",
-      icon: <DashboardIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-    },
-  ],
-  data: {
-    label: "Quiz",
-    icon: <ClassIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-  },
-};
-
 const Quiz = () => {
   const { data: quizList = [], isLoading } = useGetAllQuizQuery();
   const [updateQuizStatus] = useUpdateQuizStatusMutation();
@@ -100,6 +86,26 @@ const Quiz = () => {
           message: err.data?.message || err.data,
         });
       });
+  };
+
+  const topViewNavData = {
+    navData: [
+      {
+        label: "Dashobard",
+        path: "/dashboard",
+        icon: <DashboardIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
+      },
+    ],
+    data: {
+      label: "Quiz",
+      icon: <ClassIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
+    },
+    addOn: {
+      isButton: true,
+      buttonText: "Add Quiz",
+      startIcon: <AddIcon />,
+      handleClick: handleOpen,
+    },
   };
 
   return (
