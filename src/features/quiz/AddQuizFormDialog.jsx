@@ -89,6 +89,7 @@ const AddQuizFormDialog = ({ open, handleClose }) => {
           onSubmit: handleSubmit,
         }}
         fullWidth
+        disableScrollLock
       >
         <DialogTitle>Create Quiz</DialogTitle>
         <DialogContent>

@@ -62,12 +62,12 @@ const Quiz = () => {
 
   const [open, setOpen] = React.useState(false);
 
-  const handleOpen = () => {
+  const handleOpen = React.useCallback(() => {
     setOpen(true);
-  };
-  const handleClose = () => {
+  }, []);
+  const handleClose = React.useCallback(() => {
     setOpen(false);
-  };
+  }, []);
 
   const handleStatus = (e, quiz) => {
     updateQuizStatus({
@@ -88,31 +88,34 @@ const Quiz = () => {
       });
   };
 
-  const topViewNavData = {
-    navData: [
-      {
-        label: "Dashobard",
-        path: "/dashboard",
-        icon: <DashboardIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
+  const topViewNavData = React.useMemo(
+    () => ({
+      navData: [
+        {
+          label: "Dashobard",
+          path: "/dashboard",
+          icon: <DashboardIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
+        },
+      ],
+      data: {
+        label: "Quiz",
+        icon: <ClassIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
       },
-    ],
-    data: {
-      label: "Quiz",
-      icon: <ClassIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-    },
-    addOn: {
-      isButton: true,
-      buttonText: "Add Quiz",
-      startIcon: <AddIcon />,
-      handleClick: handleOpen,
-    },
-  };
+      addOn: {
+        isButton: true,
+        buttonText: "Add Quiz",
+        startIcon: <AddIcon />,
+        handleClick: handleOpen,
+      },
+    }),
+    [handleOpen]
+  );
 
   return (
     <React.Fragment>
       <TopViewNav topViewNavData={topViewNavData} />
       <Box sx={{ mt: 2 }}>
-        <TableContainer component={Paper} sx={{ maxHeight: "70vh" }}>
+        <TableContainer component={Paper} sx={{ maxHeight: "75vh" }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>

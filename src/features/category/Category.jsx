@@ -20,32 +20,35 @@ const Category = () => {
 
   const [open, setOpen] = React.useState(false);
 
-  const handleOpen = () => {
+  const handleOpen = React.useCallback(() => {
     setOpen(true);
-  };
-  const handleClose = () => {
+  }, []);
+  const handleClose = React.useCallback(() => {
     setOpen(false);
-  };
+  }, []);
 
-  const topViewNavData = {
-    navData: [
-      {
-        label: "Dashobard",
-        path: "/dashboard",
-        icon: <DashboardIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
+  const topViewNavData = React.useMemo(
+    () => ({
+      navData: [
+        {
+          label: "Dashobard",
+          path: "/dashboard",
+          icon: <DashboardIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
+        },
+      ],
+      data: {
+        label: "Category",
+        icon: <FolderIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
       },
-    ],
-    data: {
-      label: "Category",
-      icon: <FolderIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
-    },
-    addOn: {
-      isButton: true,
-      buttonText: "Add Quiz",
-      startIcon: <AddIcon />,
-      handleClick: handleOpen,
-    },
-  };
+      addOn: {
+        isButton: true,
+        buttonText: "Add Category",
+        startIcon: <AddIcon />,
+        handleClick: handleOpen,
+      },
+    }),
+    [handleOpen]
+  );
 
   return (
     <React.Fragment>
