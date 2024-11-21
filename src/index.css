@@ -6,24 +6,30 @@
 
 body{
   background-color: #f5f5f5;
+  /* background-color: #121212; */
 }
 
-/* width */
+::-webkit-file-upload-button {
+  display: none;
+}
+
+::file-selector-button {
+  display: none;
+}
+
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
+  height: 10px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #b9b8b8;
+  background: #888;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #717070;
+  background: #555;
 }

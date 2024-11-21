@@ -10,10 +10,8 @@ import SnackAlert from "../../components/Alert";
 
 import { useCreateQuizMutation } from "../../services/quiz";
 import { Autocomplete, Grid } from "@mui/material";
-import { useGetAllCategoryQuery } from "../../services/category";
 
-const AddQuizFormDialog = ({ open, handleClose }) => {
-  const { data: categoryList = [] } = useGetAllCategoryQuery();
+const AddQuizFormDialog = ({ open, handleClose, categoryList }) => {
   const [createQuiz, createQuizRes] = useCreateQuizMutation();
   const [snack, setSnack] = React.useState({
     open: false,

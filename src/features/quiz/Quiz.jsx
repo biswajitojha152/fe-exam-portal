@@ -5,7 +5,7 @@ import TopViewNav from "../../components/TopViewNav";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ClassIcon from "@mui/icons-material/Class";
 import AddIcon from "@mui/icons-material/Add";
-
+import SearchIcon from "@mui/icons-material/Search";
 import {
   useGetAllQuizQuery,
   useUpdateQuizStatusMutation,
@@ -13,13 +13,17 @@ import {
 import {
   Box,
   Paper,
-  IconButton,
   TableContainer,
   Table,
   TableHead,
   TableBody,
   TableRow,
   Link,
+  TextField,
+  InputAdornment,
+  Grid,
+  Autocomplete,
+  TablePagination,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -29,6 +33,15 @@ import { Link as RouterLink } from "react-router-dom";
 import SnackAlert from "../../components/Alert";
 import LoadingComponent from "../../components/LoadingComponent";
 import AddQuizFormDialog from "./AddQuizFormDialog";
+import { useGetAllCategoryQuery } from "../../services/category";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCategoryFilter,
+  setPageNo,
+  setPageSizeAndPageNo,
+  setSearchInput,
+} from "./quizSlice";
+import useDebounce from "../../hooks/useDebounce";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,7 +65,28 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const Quiz = () => {
-  const { data: quizList = [], isLoading } = useGetAllQuizQuery();
+  const dispatch = useDispatch();
+  const category = useSelector((state) => state.quiz.category);
+  const categoryInputVal = useSelector((state) => state.quiz.categoryInputVal);
+  const searchInput = useSelector((state) => state.quiz.searchInput);
+  const pageNo = useSelector((state) => state.quiz.pageNo);
+  const pageSize = useSelector((state) => state.quiz.pageSize);
+  const searchQuery = useDebounce(searchInput, 500);
+  const {
+    data: quizList = {
+      data: [],
+      pageNumber: 0,
+      pageSize: 0,
+      totalElements: 0,
+    },
+    isLoading,
+  } = useGetAllQuizQuery({
+    pageNo,
+    pageSize,
+    categoryId: category && category.id,
+    searchInput: searchQuery || null,
+  });
+  const { data: categoryList = [] } = useGetAllCategoryQuery();
   const [updateQuizStatus] = useUpdateQuizStatusMutation();
   const [snack, setSnack] = React.useState({
     open: false,
@@ -88,6 +122,26 @@ const Quiz = () => {
       });
   };
 
+  const handleCategoryFilterchange = React.useCallback(
+    (inputVal) => {
+      dispatch(setCategoryFilter(inputVal));
+    },
+    [dispatch]
+  );
+
+  const handleChangePage = (event, newPage) => {
+    dispatch(setPageNo(newPage));
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    dispatch(
+      setPageSizeAndPageNo({
+        pageSize: parseInt(event.target.value, 10),
+        pageNo: 0,
+      })
+    );
+  };
+
   const topViewNavData = React.useMemo(
     () => ({
       navData: [
@@ -115,7 +169,53 @@ const Quiz = () => {
     <React.Fragment>
       <TopViewNav topViewNavData={topViewNavData} />
       <Box sx={{ mt: 2 }}>
-        <TableContainer component={Paper} sx={{ maxHeight: "75vh" }}>
+        <Box sx={{ mb: 1 }}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
+              <Autocomplete
+                disablePortal
+                options={categoryList}
+                getOptionLabel={(option) => option.name}
+                size="small"
+                value={category}
+                onChange={(e, newVal) =>
+                  handleCategoryFilterchange({
+                    category: newVal,
+                    categoryInputVal,
+                  })
+                }
+                inputValue={categoryInputVal}
+                onInputChange={(e, newVal) =>
+                  handleCategoryFilterchange({
+                    category,
+                    categoryInputVal: newVal,
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="Select Category" />
+                )}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
+              <TextField
+                label="Search"
+                size="small"
+                value={searchInput}
+                onChange={(e) => dispatch(setSearchInput(e.target.value))}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+        </Box>
+        <TableContainer component={Paper} sx={{ maxHeight: "67vh" }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>
@@ -127,7 +227,7 @@ const Quiz = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {quizList.map((quiz, index) => {
+              {quizList.data.map((quiz, index) => {
                 return (
                   <StyledTableRow key={quiz.id}>
                     <StyledTableCell>{index + 1}</StyledTableCell>
@@ -157,24 +257,20 @@ const Quiz = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <IconButton
-          sx={{
-            backgroundColor: (theme) => theme.palette.primary.main,
-            color: "white",
-            position: "fixed",
-            bottom: 10,
-            right: 10,
-            "&:hover": {
-              backgroundColor: (theme) => theme.palette.primary.light,
-            },
-          }}
-          size="small"
-          onClick={handleOpen}
-        >
-          <AddIcon fontSize="large" />
-        </IconButton>
+        <TablePagination
+          component="div"
+          count={quizList.totalElements}
+          page={pageNo}
+          onPageChange={handleChangePage}
+          rowsPerPage={pageSize}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Box>
-      <AddQuizFormDialog open={open} handleClose={handleClose} />
+      <AddQuizFormDialog
+        open={open}
+        handleClose={handleClose}
+        categoryList={categoryList}
+      />
       <LoadingComponent open={isLoading} />
       <SnackAlert snack={snack} setSnack={setSnack} />
     </React.Fragment>

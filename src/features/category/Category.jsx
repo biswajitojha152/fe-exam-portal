@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Paper, Typography, Grid, IconButton, Link } from "@mui/material";
+import { Box, Paper, Typography, Grid, Link } from "@mui/material";
 
 import { Link as RouterLink } from "react-router-dom";
 
@@ -14,8 +14,11 @@ import TopViewNav from "../../components/TopViewNav";
 import LoadingComponent from "../../components/LoadingComponent";
 
 import { useGetAllCategoryQuery } from "../../services/category";
+import { useDispatch } from "react-redux";
+import { setCategoryFilter } from "../quiz/quizSlice";
 
 const Category = () => {
+  const dispatch = useDispatch();
   const { data: categoryList = [], isLoading } = useGetAllCategoryQuery();
 
   const [open, setOpen] = React.useState(false);
@@ -69,6 +72,14 @@ const Category = () => {
                     underline="hover"
                     component={RouterLink}
                     to={`/quiz`}
+                    onClick={() =>
+                      dispatch(
+                        setCategoryFilter({
+                          category,
+                          categoryInputVal: category.name,
+                        })
+                      )
+                    }
                     sx={{
                       fontWeight: "bold",
                       letterSpacing: 1,
@@ -90,22 +101,6 @@ const Category = () => {
             );
           })}
         </Grid>
-        <IconButton
-          sx={{
-            backgroundColor: (theme) => theme.palette.primary.main,
-            color: "white",
-            position: "fixed",
-            bottom: 10,
-            right: 10,
-            "&:hover": {
-              backgroundColor: (theme) => theme.palette.primary.light,
-            },
-          }}
-          size="small"
-          onClick={handleOpen}
-        >
-          <AddIcon fontSize="large" />
-        </IconButton>
       </Box>
       <AddCategoryFormDialog open={open} handleClose={handleClose} />
       <LoadingComponent open={isLoading} />

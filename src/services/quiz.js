@@ -4,9 +4,15 @@ import config from "../config/config";
 const quizApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     getAllQuiz: build.query({
-      query: () => ({
+      query: (payload) => ({
         url: config.apiName.getAllQuiz,
         method: "GET",
+        params: {
+          pageNo: payload.pageNo,
+          pageSize: payload.pageSize,
+          categoryId: payload.categoryId,
+          searchInput: payload.searchInput,
+        },
       }),
       providesTags: ["getAllQuiz"],
     }),

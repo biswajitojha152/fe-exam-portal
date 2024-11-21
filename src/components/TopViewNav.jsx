@@ -9,7 +9,6 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Link as RouterLink } from "react-router-dom";
 
 const TopViewNav = ({ topViewNavData }) => {
-  console.log("nav rendering");
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
       <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon />}>
