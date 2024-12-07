@@ -1,18 +1,6 @@
 import React from "react";
 
-import {
-  Paper,
-  Grid,
-  Typography,
-  Box,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Toolbar,
-} from "@mui/material";
+import { Paper, Grid, Typography, Box } from "@mui/material";
 import GroupIcon from "@mui/icons-material/Group";
 import FolderIcon from "@mui/icons-material/Folder";
 import ClassIcon from "@mui/icons-material/Class";
@@ -20,8 +8,12 @@ import FunctionsIcon from "@mui/icons-material/Functions";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 
-import LoadingComponent from "../../components/LoadingComponent";
+import QuizTrailTable from "./QuizTrailTable";
+
 import { useGetDashboardDataQuery } from "../../services/dashboard";
+
+import LoadingComponent from "../../components/LoadingComponent";
+import ChartComponent from "./ChartComponent";
 
 const dashboardMenuList = [
   {
@@ -50,7 +42,7 @@ const dashboardSubMenuList = [
   },
   {
     label: "Passed Attempts",
-    key: "passAttempts",
+    key: "passedAttempts",
     icon: <CheckCircleIcon fontSize="small" sx={{ mr: 1 }} color="success" />,
     color: "success",
   },
@@ -120,7 +112,7 @@ const CustomTabLabel = React.memo(({ label, count, icon, color }) => {
           color: (theme) => theme.palette[color].main,
         }}
       >
-        {count || 100}
+        {count}
       </Typography>
     </Box>
   );
@@ -132,9 +124,11 @@ const Dashboard = () => {
       numberOfCategory: 0,
       numberOfQuiz: 0,
       numberOfUser: 0,
-      totalAttempts: 0,
-      passAttempts: 0,
-      failedAttempts: 0,
+      attemptsDTO: {
+        totalAttempts: 0,
+        passedAttempts: 0,
+        failedAttempts: 0,
+      },
     },
     isLoading,
   } = useGetDashboardDataQuery();
@@ -166,7 +160,7 @@ const Dashboard = () => {
                 <CustomTabLabel
                   key={subMenu.label}
                   label={subMenu.label}
-                  count={dashboardData[subMenu.key]}
+                  count={dashboardData.attemptsDTO[subMenu.key]}
                   icon={subMenu.icon}
                   color={subMenu.color}
                 />
@@ -175,109 +169,13 @@ const Dashboard = () => {
           </Paper>
         </Grid>
       </Grid>
-      <Box sx={{ mt: 5 }}>
-        <Grid container>
+      <Box sx={{ mt: 2 }}>
+        <Grid container spacing={2}>
           <Grid item xs={12} xl={7}>
-            <Paper>
-              <Toolbar
-                sx={[
-                  {
-                    pl: { sm: 2 },
-                    pr: { xs: 1, sm: 1 },
-                  },
-                ]}
-              >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: "bold",
-                    letterSpacing: 1,
-                  }}
-                >
-                  Quiz Submission History
-                </Typography>
-              </Toolbar>
-              <TableContainer>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow
-                      sx={{
-                        ".MuiTableCell-root": {
-                          fontSize: "1rem",
-                          fontWeight: "bold",
-                          letterSpacing: 1,
-                        },
-                      }}
-                    >
-                      <TableCell>Sl No.</TableCell>
-                      <TableCell>Date & Time</TableCell>
-                      <TableCell>Username</TableCell>
-                      <TableCell>Category</TableCell>
-                      <TableCell>Quiz Name</TableCell>
-                      <TableCell>Status</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow
-                      sx={{
-                        // "& > *": { borderBottom: "unset" },
-                        ".MuiTableCell-root": {
-                          fontSize: "1rem",
-                          letterSpacing: 1,
-                        },
-                      }}
-                    >
-                      <TableCell>item 1</TableCell>
-                      <TableCell>item 2</TableCell>
-                      <TableCell>item 3</TableCell>
-                      <TableCell>item 4</TableCell>
-                      <TableCell>item 5</TableCell>
-                      <TableCell>
-                        <Box
-                          sx={{
-                            color: "#51A037",
-                            backgroundColor: "rgba(81, 160, 55, 0.1)",
-                            border: `0.5px solid #51A037`,
-                            textAlign: "center",
-                            borderRadius: 1,
-                          }}
-                        >
-                          Passed
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow
-                      sx={{
-                        // "& > *": { borderBottom: "unset" },
-                        ".MuiTableCell-root": {
-                          fontSize: "1rem",
-                          letterSpacing: 1,
-                        },
-                      }}
-                    >
-                      <TableCell>item 1</TableCell>
-                      <TableCell>item 2</TableCell>
-                      <TableCell>item 3</TableCell>
-                      <TableCell>item 4</TableCell>
-                      <TableCell>item 5</TableCell>
-                      <TableCell>
-                        <Box
-                          sx={{
-                            color: "#ED1C24",
-                            backgroundColor: "rgba(237, 28, 36, 0.1)",
-                            border: `0.5px solid #ED1C24`,
-                            textAlign: "center",
-                            borderRadius: 1,
-                          }}
-                        >
-                          Failed
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
+            <QuizTrailTable />
+          </Grid>
+          <Grid item xs={12} xl={5}>
+            <ChartComponent attemptsDTO={dashboardData.attemptsDTO} />
           </Grid>
         </Grid>
       </Box>

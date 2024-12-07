@@ -9,8 +9,28 @@ const dashboardApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    getQuizTrail: build.query({
+      query: (payload) => ({
+        url: config.apiName.getQuizTrail,
+        method: "GET",
+        params: {
+          fromDate: payload.fromDate,
+          toDate: payload.toDate,
+          searchByUsername: payload.searchByUsername,
+          categoryId: payload.categoryId,
+          quizId: payload.quizId,
+          status: payload.status,
+          pageNo: payload.pageNo,
+          pageSize: payload.pageSize,
+        },
+      }),
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetDashboardDataQuery } = dashboardApi;
+export const {
+  useGetDashboardDataQuery,
+  useGetQuizTrailQuery,
+  useLazyGetQuizTrailQuery,
+} = dashboardApi;
