@@ -30,7 +30,7 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import Switch from "@mui/material/Switch";
 
 import { Link as RouterLink } from "react-router-dom";
-import SnackAlert from "../../components/Alert";
+import SnackAlert from "../../components/SnackAlert";
 import LoadingComponent from "../../components/LoadingComponent";
 import AddQuizFormDialog from "./AddQuizFormDialog";
 import { useGetAllCategoryQuery } from "../../services/category";

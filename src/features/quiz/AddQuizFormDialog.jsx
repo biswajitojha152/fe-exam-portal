@@ -6,7 +6,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import LoadingComponent from "../../components/LoadingComponent";
-import SnackAlert from "../../components/Alert";
+import SnackAlert from "../../components/SnackAlert";
 
 import { useCreateQuizMutation } from "../../services/quiz";
 import { Autocomplete, Grid } from "@mui/material";

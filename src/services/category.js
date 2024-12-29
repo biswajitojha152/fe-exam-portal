@@ -18,9 +18,40 @@ const categoryApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["getAllCategory"],
     }),
+    updateCategory: build.mutation({
+      query: (payload) => ({
+        url: config.apiName.updateCategory,
+        method: "PUT",
+        data: payload,
+      }),
+      invalidatesTags: ["getAllCategory", "getCategoryUpdateListById"],
+    }),
+    updateCategoriesStatus: build.mutation({
+      query: (payload) => ({
+        url: config.apiName.updateCategoriesStatus,
+        method: "PUT",
+        data: payload,
+      }),
+      invalidatesTags: ["getAllCategory"],
+    }),
+    getCategoryUpdateListById: build.query({
+      query: (payload) => ({
+        url: config.apiName.getCategoryUpdateListById,
+        method: "GET",
+        params: {
+          categoryId: payload,
+        },
+      }),
+      providesTags: ["getCategoryUpdateListById"],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetAllCategoryQuery, useCreateCategoryMutation } =
-  categoryApi;
+export const {
+  useGetAllCategoryQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useUpdateCategoriesStatusMutation,
+  useGetCategoryUpdateListByIdQuery,
+} = categoryApi;

@@ -20,7 +20,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import LoadingComponent from "../../components/LoadingComponent";
-import SnackAlert from "../../components/Alert";
+import SnackAlert from "../../components/SnackAlert";
 
 import { useLoginMutation } from "../../services/login";
 

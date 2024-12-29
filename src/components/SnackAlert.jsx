@@ -8,7 +8,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 const SnackAlert = ({ snack, setSnack }) => {
-  // console.log("snack inside alert", snack);
   const handleClose = React.useCallback(
     (event, reason) => {
       if (reason === "clickaway") {

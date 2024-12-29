@@ -9,7 +9,7 @@ import {
 import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import SnackAlert from "../../components/Alert";
+import SnackAlert from "../../components/SnackAlert";
 import { useSaveQuestionMutation } from "../../services/quiz";
 import { useParams } from "react-router-dom";
 import LoadingComponent from "../../components/LoadingComponent";

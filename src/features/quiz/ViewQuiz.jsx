@@ -14,7 +14,7 @@ import ClassIcon from "@mui/icons-material/Class";
 import QuizIcon from "@mui/icons-material/Quiz";
 
 import TopViewNav from "../../components/TopViewNav";
-import SnackAlert from "../../components/Alert";
+import SnackAlert from "../../components/SnackAlert";
 import LoadingComponent from "../../components/LoadingComponent";
 
 import { useParams } from "react-router-dom";

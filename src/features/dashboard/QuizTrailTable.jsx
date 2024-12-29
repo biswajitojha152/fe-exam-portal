@@ -17,7 +17,6 @@ import {
   Box,
   Paper,
 } from "@mui/material";
-import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -38,21 +37,10 @@ import {
   useLazyGetQuizTrailQuery,
 } from "../../services/dashboard";
 
-import { styled } from "@mui/material/styles";
 import exportToExcel from "../../helper/exportToExcel";
 import LoadingComponent from "../../components/LoadingComponent";
-import SnackAlert from "../../components/Alert";
-
-const BootstrapTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} arrow classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.common.black,
-  },
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.black,
-  },
-}));
+import SnackAlert from "../../components/SnackAlert";
+import BootstrapTooltip from "../../components/BootstrapTooltip";
 
 const QuizTrailTable = () => {
   const [snack, setSnack] = React.useState({
@@ -229,6 +217,7 @@ const QuizTrailTable = () => {
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <BootstrapTooltip
                   title={showFilter ? "Remove Filter" : "Apply Filter"}
+                  arrow
                 >
                   <IconButton size="small" onClick={handleShowFilter}>
                     <TuneIcon

@@ -10,7 +10,12 @@ import { Link as RouterLink } from "react-router-dom";
 
 const TopViewNav = ({ topViewNavData }) => {
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+      }}
+    >
       <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon />}>
         {topViewNavData.navData.map((nav) => {
           return (
@@ -28,8 +33,11 @@ const TopViewNav = ({ topViewNavData }) => {
           );
         })}
         <Typography
-          sx={{ display: "flex", alignItems: "center" }}
-          color="text.primary"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            color: (theme) => theme.palette.primary.main,
+          }}
         >
           {topViewNavData.data.icon}
           {topViewNavData.data.label}
@@ -40,6 +48,7 @@ const TopViewNav = ({ topViewNavData }) => {
           variant="contained"
           sx={{
             textTransform: "none",
+            whiteSpace: "nowrap",
           }}
           startIcon={topViewNavData.addOn.startIcon}
           onClick={topViewNavData.addOn.handleClick}
