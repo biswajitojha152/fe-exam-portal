@@ -32,7 +32,7 @@ const categoryApi = apiSlice.injectEndpoints({
         method: "PUT",
         data: payload,
       }),
-      invalidatesTags: ["getAllCategory"],
+      invalidatesTags: ["getAllCategory", "getCategoriesStatusUpdateList"],
     }),
     getCategoryUpdateListById: build.query({
       query: (payload) => ({
@@ -44,6 +44,13 @@ const categoryApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["getCategoryUpdateListById"],
     }),
+    getCategoriesStatusUpdateList: build.query({
+      query: () => ({
+        url: config.apiName.getCategoriesStatusUpdateList,
+        method: "GET",
+      }),
+      providesTags: ["getCategoriesStatusUpdateList"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -54,4 +61,5 @@ export const {
   useUpdateCategoryMutation,
   useUpdateCategoriesStatusMutation,
   useGetCategoryUpdateListByIdQuery,
+  useGetCategoriesStatusUpdateListQuery,
 } = categoryApi;

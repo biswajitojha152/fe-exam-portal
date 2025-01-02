@@ -463,7 +463,9 @@ const QuizTrailTable = () => {
                   },
                 }}
               >
-                <TableCell colSpan={6}>No record found.</TableCell>
+                <TableCell colSpan={6}>
+                  {isLoading ? "Fetching data" : "No record found."}
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

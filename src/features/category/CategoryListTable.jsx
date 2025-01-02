@@ -40,6 +40,7 @@ import BootstrapTooltip from "../../components/BootstrapTooltip";
 import LoadingComponent from "../../components/LoadingComponent";
 import SnackAlert from "../../components/SnackAlert";
 import CategoryUpdateTrailDialog from "./CategoryUpdateTrailDiralog";
+import CategoriesStatusUpdateTrailDialog from "./CategoriesStatusUpdateTrailDialog";
 
 const Row = React.memo(
   ({
@@ -154,6 +155,7 @@ const Row = React.memo(
 
 const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
   const dispatch = useDispatch();
+  const [open, setOpen] = React.useState(false);
   const [snack, setSnack] = React.useState({
     open: false,
     message: "",
@@ -178,6 +180,14 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
       ),
     [categoryList, filterData.search]
   );
+
+  const handleOpen = React.useCallback(() => {
+    setOpen(true);
+  }, []);
+
+  const handleClose = React.useCallback(() => {
+    setOpen(false);
+  }, []);
 
   const handleRowClick = React.useCallback((checked, selectedId) => {
     if (checked === true) {
@@ -348,11 +358,17 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
           >
             Category List
           </Typography>
-          <IconButton
-          // onClick={() => handleOpenCategoryUpdateTrailDialog(category.id)}
+          <BootstrapTooltip
+            title={
+              <Typography variant="caption">
+                Categories status update trail
+              </Typography>
+            }
           >
-            <TimelineIcon color="warning" />
-          </IconButton>
+            <IconButton onClick={handleOpen}>
+              <TimelineIcon color="warning" />
+            </IconButton>
+          </BootstrapTooltip>
         </Box>
         <Box
           sx={{
@@ -493,7 +509,9 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
                   },
                 }}
               >
-                <TableCell colSpan={6}>No record found.</TableCell>
+                <TableCell colSpan={6}>
+                  {isLoading ? "Fetching data." : "No record found."}
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
@@ -504,6 +522,10 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
         categoryId={categoryUpdateTrailDialog}
         handleClose={() => setCategoryUpdateTrailDialog(null)}
         key={categoryUpdateTrailDialog}
+      />
+      <CategoriesStatusUpdateTrailDialog
+        open={open}
+        handleClose={handleClose}
       />
       <LoadingComponent
         open={isLoading || updateCategoriesStatusRes.isLoading}

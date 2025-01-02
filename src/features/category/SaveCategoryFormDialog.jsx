@@ -148,6 +148,7 @@ const SaveCategoryFormDialog = ({
                 helperText={
                   formik.touched.categoryName && formik.errors.categoryName
                 }
+                disabled={Boolean(categoryToUpdate)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -189,4 +190,4 @@ const SaveCategoryFormDialog = ({
   );
 };
 
-export default SaveCategoryFormDialog;
+export default React.memo(SaveCategoryFormDialog);

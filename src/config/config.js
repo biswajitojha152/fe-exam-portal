@@ -12,6 +12,8 @@ const config = Object.freeze({
     updateCategory: "api/category/updateCategory",
     updateCategoriesStatus: "api/category/updateCategoryStatus",
     getCategoryUpdateListById: "api/category/getCategoryUpdateAuditLog",
+    getCategoriesStatusUpdateList:
+      "api/category/getCategoryStatusUpdateAuditLog",
     // quiz
     getAllQuiz: "api/quiz/getAllQuiz",
     getQuizById: "api/quiz/getQuizById",

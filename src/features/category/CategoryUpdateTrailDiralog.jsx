@@ -6,6 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import {
   Box,
+  Chip,
   Grid,
   Paper,
   Table,
@@ -182,7 +183,7 @@ const CategoryUpdateTrailDialog = ({ open, handleClose, categoryId }) => {
                       }}
                     >
                       <TableCell>Sl No.</TableCell>
-                      <TableCell>Updated name</TableCell>
+                      <TableCell>Updated Category</TableCell>
                       <TableCell>Updated Description</TableCell>
                       <TableCell>Updated By</TableCell>
                       <TableCell>Updated At</TableCell>
@@ -210,13 +211,12 @@ const CategoryUpdateTrailDialog = ({ open, handleClose, categoryId }) => {
                           >
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>
-                              <BootstrapTooltip
-                                title={
-                                  <Typography>{audit.data.name}</Typography>
-                                }
-                              >
-                                <Box>{audit.data.name}</Box>
-                              </BootstrapTooltip>
+                              <Chip
+                                label="read only"
+                                size="small"
+                                variant="contained"
+                                disabled
+                              />
                             </TableCell>
                             <TableCell>
                               <BootstrapTooltip
