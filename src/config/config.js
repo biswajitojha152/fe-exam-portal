@@ -10,7 +10,7 @@ const config = Object.freeze({
     getAllCategory: "api/category/getAllCategories",
     createCategory: "api/category/saveCategory",
     updateCategory: "api/category/updateCategory",
-    updateCategoriesStatus: "api/category/updateCategoryStatus",
+    updateCategoriesStatus: "api/category/updateCategoriesStatus",
     getCategoryUpdateListById: "api/category/getCategoryUpdateAuditLog",
     getCategoriesStatusUpdateList:
       "api/category/getCategoryStatusUpdateAuditLog",
@@ -19,7 +19,10 @@ const config = Object.freeze({
     getQuizById: "api/quiz/getQuizById",
     createQuiz: "api/quiz/saveQuiz",
     updateQuiz: "api/quiz/updateQuiz",
-    updateQuizStatus: "api/quiz/updateQuizStatus",
+    updateQuizzesStatus: "api/quiz/updateQuizzesStatus",
+    getQuizIdsWithQuizCount: "api/quiz/getQuizIdsWithQuizCount",
+    getQuizUpdateListById: "api/quiz/getQuizUpdateAuditLog",
+    getQuizzesStatusUpdateList: "api/quiz/getQuizStatusUpdateAuditLog",
     // question
     saveQuestion: "api/question/saveQuestion",
     getAllQuestions: "api/question/getAllQuestions",

@@ -21,11 +21,11 @@ import SnackAlert from "../../components/SnackAlert";
 const validationSchema = Yup.object().shape({
   categoryName: Yup.string()
     .trim()
-    .min(1, "Category Name must have at least one visible character")
+    .min(1, "Category Name must have at least one visible character.")
     .required("Category Name is required."),
   description: Yup.string()
     .trim()
-    .min(1, "Description must have at least one visible character")
+    .min(1, "Description must have at least one visible character.")
     .required("Description is required."),
 });
 
@@ -51,11 +51,14 @@ const SaveCategoryFormDialog = ({
     },
     validationSchema,
     onSubmit: (values) => {
+      const payload = {
+        name: values.categoryName,
+        description: values.description,
+      };
       if (Boolean(categoryToUpdate)) {
         updateCategory({
           id: categoryToUpdate.id,
-          name: values.categoryName.trim(),
-          description: values.description.trim(),
+          ...payload,
         })
           .unwrap()
           .then((res) => {
@@ -74,10 +77,7 @@ const SaveCategoryFormDialog = ({
             });
           });
       } else {
-        createCategory({
-          name: values.categoryName.trim(),
-          description: values.description.trim(),
-        })
+        createCategory(payload)
           .unwrap()
           .then((res) => {
             setSnack({
@@ -122,6 +122,7 @@ const SaveCategoryFormDialog = ({
         onTransitionEnter={handleTransitionEnter}
         onTransitionExited={handleTransitionExited}
         fullWidth
+        disableScrollLock
       >
         <DialogTitle>
           {Boolean(categoryToUpdate) ? "Update Category" : "Create Category"}

@@ -19,7 +19,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useGetCategoriesStatusUpdateListQuery } from "../../services/category";
+import { useGetQuizzesStatusUpdateListQuery } from "../../services/quiz";
 
 import moment from "moment/moment";
 
@@ -126,14 +126,20 @@ const Row = React.memo(({ statusUpdateTrail, slNo }) => {
           isActive={statusUpdateTrail.isActive}
         />
       </TableCell>
-      <TableCell>{statusUpdateTrail.remark}</TableCell>
+      <TableCell>
+        <BootstrapTooltip
+          title={<Typography>{statusUpdateTrail.remark}</Typography>}
+        >
+          <Box>{statusUpdateTrail.remark}</Box>
+        </BootstrapTooltip>
+      </TableCell>
     </TableRow>
   );
 });
 
-const CategoriesStatusUpdateTrailDialog = ({ open, handleClose }) => {
-  const { data: categoriesStatusUpdateTrail = [], isLoading } =
-    useGetCategoriesStatusUpdateListQuery(null, { skip: !open });
+const QuizzesStatusUpdateTrailDialog = ({ open, handleClose }) => {
+  const { data: quizzesStatusUpdateTrail = [], isLoading } =
+    useGetQuizzesStatusUpdateListQuery(null, { skip: !open });
   const handleTransitionEnter = React.useCallback(() => {}, []);
 
   const handleTransitionExited = React.useCallback(() => {}, []);
@@ -149,7 +155,7 @@ const CategoriesStatusUpdateTrailDialog = ({ open, handleClose }) => {
         maxWidth="lg"
       >
         <DialogTitle sx={{ letterSpacing: 1, fontWeight: 600 }}>
-          Categories Status Update Trail
+          Quizzes Status Update Trail
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
@@ -171,13 +177,13 @@ const CategoriesStatusUpdateTrailDialog = ({ open, handleClose }) => {
                       <TableCell>Sl No.</TableCell>
                       <TableCell>Updated At</TableCell>
                       <TableCell>Updated By</TableCell>
-                      <TableCell>Categories Affected</TableCell>
+                      <TableCell>Quizzes Affected</TableCell>
                       <TableCell>Remark</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {Boolean(categoriesStatusUpdateTrail.length) ? (
-                      categoriesStatusUpdateTrail.map(
+                    {Boolean(quizzesStatusUpdateTrail.length) ? (
+                      quizzesStatusUpdateTrail.map(
                         (statusUpdateTrail, index) => {
                           return (
                             <Row
@@ -218,4 +224,4 @@ const CategoriesStatusUpdateTrailDialog = ({ open, handleClose }) => {
   );
 };
 
-export default CategoriesStatusUpdateTrailDialog;
+export default QuizzesStatusUpdateTrailDialog;

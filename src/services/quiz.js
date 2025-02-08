@@ -22,7 +22,11 @@ const quizApi = apiSlice.injectEndpoints({
         method: "POST",
         data: payload,
       }),
-      invalidatesTags: ["getAllQuiz"],
+      invalidatesTags: [
+        "getAllQuiz",
+        "getAllCategory",
+        "getQuizIdsWithQuizCount",
+      ],
     }),
     getQuizById: build.query({
       query: (payload) => ({
@@ -37,16 +41,29 @@ const quizApi = apiSlice.injectEndpoints({
         method: "PUT",
         data: payload,
       }),
-      invalidatesTags: ["getAllQuiz", "getQuizById"],
+      invalidatesTags: [
+        "getAllQuiz",
+        "getQuizById",
+        "getQuizIdsWithQuizCount",
+        "getQuizUpdateListById",
+      ],
     }),
-    updateQuizStatus: build.mutation({
+
+    updateQuizzesStatus: build.mutation({
       query: (payload) => ({
-        url: config.apiName.updateQuizStatus,
+        url: config.apiName.updateQuizzesStatus,
         method: "PUT",
         data: payload,
       }),
-      invalidatesTags: ["getAllQuiz", "getQuizById"],
+      invalidatesTags: [
+        "getAllQuiz",
+        "getQuizById",
+        "getQuizIdsWithQuizCount",
+        "getAllCategory",
+        "getQuizzesStatusUpdateList",
+      ],
     }),
+
     saveQuestion: build.mutation({
       query: (payload) => ({
         url: config.apiName.saveQuestion,
@@ -62,6 +79,34 @@ const quizApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["getAllQuestions"],
     }),
+    getQuizIdsWithQuizCount: build.query({
+      query: (payload) => ({
+        url: config.apiName.getQuizIdsWithQuizCount,
+        method: "GET",
+        params: {
+          categoryId: payload.categoryId,
+          searchInput: payload.searchInput,
+        },
+      }),
+      providesTags: ["getQuizIdsWithQuizCount"],
+    }),
+    getQuizUpdateListById: build.query({
+      query: (payload) => ({
+        url: config.apiName.getQuizUpdateListById,
+        method: "GET",
+        params: {
+          quizId: payload,
+        },
+      }),
+      providesTags: ["getQuizUpdateListById"],
+    }),
+    getQuizzesStatusUpdateList: build.query({
+      query: () => ({
+        url: config.apiName.getQuizzesStatusUpdateList,
+        method: "GET",
+      }),
+      providesTags: ["getQuizzesStatusUpdateList"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -70,8 +115,11 @@ export const {
   useGetAllQuizQuery,
   useCreateQuizMutation,
   useUpdateQuizMutation,
-  useUpdateQuizStatusMutation,
+  useUpdateQuizzesStatusMutation,
   useGetQuizByIdQuery,
   useSaveQuestionMutation,
   useGetAllQuestionsQuery,
+  useGetQuizIdsWithQuizCountQuery,
+  useGetQuizUpdateListByIdQuery,
+  useGetQuizzesStatusUpdateListQuery,
 } = quizApi;

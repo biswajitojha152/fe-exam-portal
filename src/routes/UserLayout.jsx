@@ -3,7 +3,10 @@ import React from "react";
 import { Box } from "@mui/material";
 import Header from "../features/header/Header";
 import SideBar from "../features/sideBar/SideBar";
+
 import { Outlet } from "react-router-dom";
+
+import LoadingComponent from "../components/LoadingComponent";
 
 const UserLayout = () => {
   return (
@@ -23,7 +26,9 @@ const UserLayout = () => {
             },
           }}
         >
-          <Outlet />
+          <React.Suspense fallback={<LoadingComponent open={true} />}>
+            <Outlet />
+          </React.Suspense>
         </Box>
       </Box>
     </React.Fragment>

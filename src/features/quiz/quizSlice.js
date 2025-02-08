@@ -4,7 +4,7 @@ const initialState = {
   category: null,
   categoryInputVal: "",
   searchInput: "",
-  pageNo: 0,
+  pageNo: 1,
   pageSize: 10,
 };
 
@@ -13,29 +13,23 @@ const quizSlice = createSlice({
   initialState,
   reducers: {
     setCategoryFilter: (state, action) => {
+      if (state.category !== action.payload.category) {
+        state.pageNo = 1;
+      }
       state.category = action.payload.category;
       state.categoryInputVal = action.payload.categoryInputVal;
-      state.pageNo = 0;
     },
     setPageNo(state, action) {
       state.pageNo = action.payload;
     },
-    setPageSizeAndPageNo(state, action) {
-      state.pageSize = action.payload.pageSize;
-      state.pageNo = action.payload.pageNo;
-    },
     setSearchInput(state, action) {
       state.searchInput = action.payload;
-      state.pageNo = 0;
+      state.pageNo = 1;
     },
   },
 });
 
-export const {
-  setCategoryFilter,
-  setPageNo,
-  setPageSizeAndPageNo,
-  setSearchInput,
-} = quizSlice.actions;
+export const { setCategoryFilter, setPageNo, setSearchInput } =
+  quizSlice.actions;
 
 export default quizSlice.reducer;

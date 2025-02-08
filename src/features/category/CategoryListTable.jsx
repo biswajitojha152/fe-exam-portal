@@ -41,6 +41,7 @@ import LoadingComponent from "../../components/LoadingComponent";
 import SnackAlert from "../../components/SnackAlert";
 import CategoryUpdateTrailDialog from "./CategoryUpdateTrailDiralog";
 import CategoriesStatusUpdateTrailDialog from "./CategoriesStatusUpdateTrailDialog";
+import RemarkFormDialog from "../../components/RemarkFormDialog";
 
 const Row = React.memo(
   ({
@@ -84,17 +85,17 @@ const Row = React.memo(
           <TableCell>
             <Stack direction="row" spacing={2}>
               <Chip
-                label={category.categoryQuizCountDTO.totalQuizCount}
+                label={category.quizCountDTO.totalQuizCount}
                 variant="outlined"
                 color="info"
               />
               <Chip
-                label={category.categoryQuizCountDTO.activeQuizCount}
+                label={category.quizCountDTO.activeQuizCount}
                 color="success"
                 variant="outlined"
               />
               <Chip
-                label={category.categoryQuizCountDTO.inActiveQuizCount}
+                label={category.quizCountDTO.inActiveQuizCount}
                 color="error"
                 variant="outlined"
               />
@@ -137,7 +138,7 @@ const Row = React.memo(
             maxWidth: 300,
             backgroundColor: category.isActive
               ? "transparent"
-              : "rgba(255, 204, 203, 0.3)",
+              : "var(--clr-in-active)",
           },
         }}
       >
@@ -162,6 +163,7 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
     severity: "",
   });
   const [selected, setSelected] = React.useState([]);
+  const [openRemarkDialog, setOpenRemarkDialog] = React.useState(false);
   const [filterData, setFilterData] = React.useState({
     search: "",
   });
@@ -180,6 +182,14 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
       ),
     [categoryList, filterData.search]
   );
+
+  const handleOpenRemarkDialog = React.useCallback(() => {
+    setOpenRemarkDialog(true);
+  }, []);
+
+  const handleCloseRemarkDialog = React.useCallback(() => {
+    setOpenRemarkDialog(false);
+  }, []);
 
   const handleOpen = React.useCallback(() => {
     setOpen(true);
@@ -203,7 +213,7 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
     (checked) => {
       if (
         checked &&
-        selected.length > 0 &&
+        Boolean(selected.length) &&
         selected.length < filteredCategoryList.length
       ) {
         setSelected([]);
@@ -236,10 +246,11 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
   );
 
   const handleUpdateCategoryStatus = React.useCallback(
-    (isActive) => {
+    (remark, isActive) => {
       updateCategoriesStatus({
         ids: selected,
-        isActive: isActive,
+        isActive,
+        remark,
       })
         .unwrap()
         .then((res) => {
@@ -248,6 +259,7 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
             message: res.message,
             severity: "success",
           });
+          handleCloseRemarkDialog();
           setSelected([]);
         })
         .catch((err) => {
@@ -258,7 +270,7 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
           });
         });
     },
-    [updateCategoriesStatus, selected]
+    [updateCategoriesStatus, selected, handleCloseRemarkDialog]
   );
 
   // const isSelected = React.useCallback(
@@ -395,7 +407,7 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
                     fontSize: 16,
                     py: 0.75,
                   }}
-                  onClick={() => handleUpdateCategoryStatus(true)}
+                  onClick={handleOpenRemarkDialog}
                 >
                   Set As Active
                 </Button>
@@ -413,7 +425,7 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
                     fontSize: 16,
                     py: 0.75,
                   }}
-                  onClick={() => handleUpdateCategoryStatus(false)}
+                  onClick={handleOpenRemarkDialog}
                 >
                   Set As InActive
                 </Button>
@@ -440,7 +452,7 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
           maxHeight: Boolean(selected.length) ? 500 : 512,
         }}
       >
-        <Table stickyHeader>
+        <Table stickyHeader size="small">
           <TableHead>
             <TableRow
               sx={{
@@ -457,7 +469,7 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
                 <Checkbox
                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                   indeterminate={
-                    selected.length > 0 &&
+                    Boolean(selected.length) &&
                     selected.length < filteredCategoryList.length
                   }
                   checked={
@@ -505,7 +517,7 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
                     fontSize: "1.1rem",
                     letterSpacing: 1,
                     textAlign: "center",
-                    py: 2,
+                    py: 1.5,
                   },
                 }}
               >
@@ -517,6 +529,27 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <RemarkFormDialog
+        open={openRemarkDialog}
+        handleClose={handleCloseRemarkDialog}
+        description={
+          isActiveButton
+            ? `Setting the selected ${
+                selected.length > 1 ? "categories" : "category"
+              } as active will make ${
+                selected.length > 1 ? "them" : "it"
+              } visible to users. Please provide a remark explaining the reason for this action.`
+            : isInActiveButton
+            ? `Setting the selected ${
+                selected.length > 1 ? "categories" : "category"
+              } as inactive will make ${
+                selected.length > 1 ? "them" : "it"
+              } unavailable to users. Please provide a remark explaining the reason for this action.`
+            : null
+        }
+        isActive={isActiveButton ? true : false}
+        handleUpdateStatus={handleUpdateCategoryStatus}
+      />
       <CategoryUpdateTrailDialog
         open={Boolean(categoryUpdateTrailDialog)}
         categoryId={categoryUpdateTrailDialog}
