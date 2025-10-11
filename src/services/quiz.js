@@ -72,6 +72,14 @@ const quizApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["getAllQuestions"],
     }),
+    importQuestionsExcel: build.mutation({
+      query: (payload) => ({
+        url: config.apiName.importQuestionsExcel,
+        method: "POST",
+        data: payload,
+      }),
+      invalidatesTags: ["getAllQuestions"],
+    }),
     getAllQuestions: build.query({
       query: (payload) => ({
         url: `${config.apiName.getAllQuestions}/${payload}`,
@@ -107,19 +115,39 @@ const quizApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["getQuizzesStatusUpdateList"],
     }),
+    getQuizInstructions: build.query({
+      query: (payload) => ({
+        url: config.apiName.getQuizInstructions,
+        method: "GET",
+        params: {
+          quizId: payload,
+        },
+      }),
+    }),
+    startQuiz: build.mutation({
+      query: (payload) => ({
+        url: config.apiName.startQuiz,
+        method: "POST",
+        data: payload,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
 
 export const {
   useGetAllQuizQuery,
+  useLazyGetAllQuizQuery,
   useCreateQuizMutation,
   useUpdateQuizMutation,
   useUpdateQuizzesStatusMutation,
   useGetQuizByIdQuery,
   useSaveQuestionMutation,
+  useImportQuestionsExcelMutation,
   useGetAllQuestionsQuery,
   useGetQuizIdsWithQuizCountQuery,
   useGetQuizUpdateListByIdQuery,
   useGetQuizzesStatusUpdateListQuery,
+  useGetQuizInstructionsQuery,
+  useStartQuizMutation,
 } = quizApi;

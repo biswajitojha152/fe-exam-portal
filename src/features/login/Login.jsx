@@ -24,6 +24,8 @@ import SnackAlert from "../../components/SnackAlert";
 
 import { useLoginMutation } from "../../services/login";
 
+import secureStorage from "../../helper/secureStorage";
+
 function Copyright(props) {
   return (
     <Typography
@@ -76,7 +78,7 @@ export default function SignIn() {
       })
         .unwrap()
         .then((res) => {
-          sessionStorage.setItem("data", JSON.stringify(res));
+          secureStorage.setItem("data", res);
           navigate("/dashboard");
         })
         .catch((err) => {

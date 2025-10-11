@@ -1,4 +1,4 @@
-import React from "react";
+import { Fragment, memo } from "react";
 
 import { Paper, Grid, Typography, Box } from "@mui/material";
 import GroupIcon from "@mui/icons-material/Group";
@@ -54,7 +54,7 @@ const dashboardSubMenuList = [
   },
 ];
 
-const CustomTab = React.memo(({ label, count, icon }) => {
+const CustomTab = memo(({ label, count, icon }) => {
   return (
     <Paper sx={{ display: "flex", alignItems: "center" }}>
       {icon}
@@ -81,7 +81,7 @@ const CustomTab = React.memo(({ label, count, icon }) => {
   );
 });
 
-const CustomTabLabel = React.memo(({ label, count, icon, color }) => {
+const CustomTabLabel = memo(({ label, count, icon, color }) => {
   return (
     <Box
       sx={{
@@ -118,7 +118,7 @@ const CustomTabLabel = React.memo(({ label, count, icon, color }) => {
   );
 });
 
-const Dashboard = () => {
+const AdminDashboard = () => {
   const {
     data: dashboardData = {
       numberOfCategory: 0,
@@ -134,7 +134,7 @@ const Dashboard = () => {
   } = useGetDashboardDataQuery();
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Grid container sx={{ ".MuiPaper-root": { p: 2 } }} spacing={2}>
         {dashboardMenuList.map((menu) => {
           return (
@@ -180,8 +180,8 @@ const Dashboard = () => {
         </Grid>
       </Box>
       <LoadingComponent open={isLoading} />
-    </React.Fragment>
+    </Fragment>
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;

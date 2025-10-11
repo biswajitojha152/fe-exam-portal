@@ -1,6 +1,4 @@
-import React from "react";
-
-import TopViewNav from "../../components/TopViewNav";
+import { Fragment, useState, useCallback, useMemo } from "react";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ClassIcon from "@mui/icons-material/Class";
@@ -13,25 +11,27 @@ import { useGetAllCategoryQuery } from "../../services/category";
 
 import QuizListTable from "./QuizListTable";
 
-const Quiz = () => {
+import TopViewNav from "../../components/TopViewNav";
+
+const QuizAdmin = () => {
   const { data: categoryList = [] } = useGetAllCategoryQuery();
-  const [snack, setSnack] = React.useState({
+  const [snack, setSnack] = useState({
     open: false,
     message: "",
     severity: "",
   });
 
-  const [open, setOpen] = React.useState(false);
-  const [quizToUpdate, setQuizToUpdate] = React.useState(null);
+  const [open, setOpen] = useState(false);
+  const [quizToUpdate, setQuizToUpdate] = useState(null);
 
-  const handleOpen = React.useCallback(() => {
+  const handleOpen = useCallback(() => {
     setOpen(true);
   }, []);
-  const handleClose = React.useCallback(() => {
+  const handleClose = useCallback(() => {
     setOpen(false);
   }, []);
 
-  const handleSetQuizToUpdate = React.useCallback(
+  const handleSetQuizToUpdate = useCallback(
     (quiz) => {
       setQuizToUpdate(quiz);
       handleOpen();
@@ -39,11 +39,11 @@ const Quiz = () => {
     [handleOpen]
   );
 
-  const handleResetQuizToUpdate = React.useCallback(() => {
+  const handleResetQuizToUpdate = useCallback(() => {
     setQuizToUpdate(null);
   }, []);
 
-  const topViewNavData = React.useMemo(
+  const topViewNavData = useMemo(
     () => ({
       navData: [
         {
@@ -67,7 +67,7 @@ const Quiz = () => {
   );
 
   return (
-    <React.Fragment>
+    <Fragment>
       <TopViewNav topViewNavData={topViewNavData} />
       <Box sx={{ mt: 2 }}>
         <QuizListTable handleSetQuizToUpdate={handleSetQuizToUpdate} />
@@ -80,8 +80,8 @@ const Quiz = () => {
         handleResetQuizToUpdate={handleResetQuizToUpdate}
       />
       <SnackAlert snack={snack} setSnack={setSnack} />
-    </React.Fragment>
+    </Fragment>
   );
 };
 
-export default Quiz;
+export default QuizAdmin;

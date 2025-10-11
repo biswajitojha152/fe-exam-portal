@@ -176,6 +176,7 @@ const Row = React.memo(
       >
         <TableCell>
           <Checkbox
+            name={quiz.name}
             checked={isSelected}
             onChange={(e) => handleRowClick(e.target.checked, quiz)}
           />
@@ -473,7 +474,6 @@ const QuizListTable = ({ handleSetQuizToUpdate }) => {
             <Grid item xs={12} sm={4} md={4} xl={3}>
               <TextField
                 label="Search"
-                name="search"
                 size="small"
                 value={searchInput}
                 onChange={(e) => dispatch(setSearchInput(e.target.value))}
@@ -500,7 +500,11 @@ const QuizListTable = ({ handleSetQuizToUpdate }) => {
           {`${selected.length} row${selected.length > 1 ? "s" : ""} selected`}
         </Typography>
       )}
-      <TableContainer sx={{ maxHeight: 470 }}>
+      <TableContainer
+        sx={{
+          maxHeight: 470,
+        }}
+      >
         <Table stickyHeader size="small">
           <TableHead>
             <TableRow
@@ -516,6 +520,7 @@ const QuizListTable = ({ handleSetQuizToUpdate }) => {
             >
               <TableCell>
                 <Checkbox
+                  name="selectAllQuiz"
                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                   indeterminate={
                     Boolean(selected.length) &&

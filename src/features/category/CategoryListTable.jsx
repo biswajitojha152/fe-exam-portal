@@ -1,25 +1,24 @@
 import React from "react";
-import {
-  Paper,
-  Link,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableCell,
-  Chip,
-  Stack,
-  Typography,
-  Toolbar,
-  TextField,
-  Grid,
-  InputAdornment,
-  Box,
-  IconButton,
-  Checkbox,
-  Button,
-} from "@mui/material";
+
+import Paper from "@mui/material/Paper";
+import Link from "@mui/material/Link";
+import TableContainer from "@mui/material/TableContainer";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Toolbar from "@mui/material/Toolbar";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import InputAdornment from "@mui/material/InputAdornment";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Checkbox from "@mui/material/Checkbox";
+import Button from "@mui/material/Button";
 
 import SearchIcon from "@mui/icons-material/Search";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
@@ -42,6 +41,8 @@ import SnackAlert from "../../components/SnackAlert";
 import CategoryUpdateTrailDialog from "./CategoryUpdateTrailDiralog";
 import CategoriesStatusUpdateTrailDialog from "./CategoriesStatusUpdateTrailDialog";
 import RemarkFormDialog from "../../components/RemarkFormDialog";
+
+import { isSubstringMatch } from "../../helper/helper";
 
 const Row = React.memo(
   ({
@@ -144,6 +145,7 @@ const Row = React.memo(
       >
         <TableCell>
           <Checkbox
+            name={category.name}
             checked={isSelected}
             onChange={(e) => handleRowClick(e.target.checked, category.id)}
           />
@@ -177,8 +179,8 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
     () =>
       categoryList.filter(
         (category) =>
-          new RegExp(filterData.search, "i").test(category.name) ||
-          new RegExp(filterData.search, "i").test(category.description)
+          isSubstringMatch(category.name, filterData.search) ||
+          isSubstringMatch(category.description, filterData.search)
       ),
     [categoryList, filterData.search]
   );
@@ -226,10 +228,10 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
     [filteredCategoryList, selected]
   );
 
-  const handleChange = React.useCallback((e) => {
+  const handleChange = React.useCallback((name, value) => {
     setFilterData((prevData) => ({
       ...prevData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   }, []);
 
@@ -306,7 +308,6 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
     () => (
       <TextField
         label="Search"
-        name="search"
         size="small"
         InputProps={{
           endAdornment: (
@@ -316,7 +317,7 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
           ),
         }}
         value={filterData.search}
-        onChange={handleChange}
+        onChange={(e) => handleChange("search", e.target.value)}
         fullWidth
       />
     ),
@@ -467,6 +468,7 @@ const CategoryListTable = ({ handleSetCategoryToUpdate }) => {
             >
               <TableCell>
                 <Checkbox
+                  name="selectAllCategory"
                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                   indeterminate={
                     Boolean(selected.length) &&

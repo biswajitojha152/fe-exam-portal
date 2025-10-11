@@ -1,29 +1,38 @@
-import * as React from "react";
+import { useState, useMemo, useCallback, memo } from "react";
+
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
+
 import Logout from "@mui/icons-material/Logout";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import CloseIcon from "@mui/icons-material/Close";
 
-import Box from "@mui/material/Box";
-import { Badge } from "@mui/material";
+import secureStorage from "../../helper/secureStorage";
 
 const Header = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [notificationEl, setNotificationEl] = React.useState(null);
-  const openNotification = React.useMemo(() => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [notificationEl, setNotificationEl] = useState(null);
+  const openNotification = useMemo(() => {
     return Boolean(notificationEl);
   }, [notificationEl]);
-  const open = React.useMemo(() => Boolean(anchorEl), [anchorEl]);
+  const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
+
+  const firstName = useMemo(
+    () => secureStorage.getItem("data")?.firstName || null,
+    []
+  );
+  const role = useMemo(() => secureStorage.getItem("data")?.role || null, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -32,11 +41,11 @@ const Header = () => {
     setAnchorEl(null);
   };
 
-  const handleClickNotification = React.useCallback((e) => {
+  const handleClickNotification = useCallback((e) => {
     setNotificationEl(e.currentTarget);
   }, []);
 
-  const handleCloseNotification = React.useCallback((e) => {
+  const handleCloseNotification = useCallback((e) => {
     setNotificationEl(null);
   }, []);
 
@@ -158,15 +167,8 @@ const Header = () => {
                 },
               }}
             >
-              <Typography variant="body1">{`${
-                JSON.parse(sessionStorage.getItem("data")).firstName
-              }`}</Typography>
-              <Typography variant="caption">
-                {JSON.parse(sessionStorage.getItem("data")).role.replace(
-                  "ROLE_",
-                  ""
-                )}
-              </Typography>
+              <Typography variant="body1">{firstName}</Typography>
+              <Typography variant="caption">{role}</Typography>
             </Box>
             <IconButton
               onClick={handleClick}
@@ -206,7 +208,7 @@ const Header = () => {
   );
 };
 
-const MenuComp = React.memo(function (props) {
+const MenuComp = memo(function (props) {
   return (
     <Menu
       disableScrollLock

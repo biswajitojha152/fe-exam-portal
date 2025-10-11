@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useCallback, useMemo } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,41 +11,61 @@ import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import FolderIcon from "@mui/icons-material/Folder";
 import ClassIcon from "@mui/icons-material/Class";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ADMIN, USER } from "../../helper/constants";
+import secureStorage from "../../helper/secureStorage";
 
 const drawerWidth = 240;
 
-const sideBarMenuListAdmin = [
+const sideBarMenuList = [
   {
     label: "Dashboard",
     path: "/dashboard",
     icon: <DashboardIcon />,
+    visibleRoles: [ADMIN, USER],
+  },
+  {
+    label: "Users",
+    path: "/users",
+    icon: <PeopleAltIcon />,
+    visibleRoles: [ADMIN],
   },
   {
     label: "Category",
     path: "/category",
     icon: <FolderIcon />,
+    visibleRoles: [ADMIN],
   },
   {
     label: "Quiz",
     path: "/quiz",
     icon: <ClassIcon />,
+    visibleRoles: [ADMIN, USER],
   },
 ];
 
 const SideBar = () => {
+  const loggedInUserRole = useMemo(
+    () => secureStorage.getItem("data").role,
+    []
+  );
+
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handleNavigate = (path) => {
-    navigate(path);
-  };
+  const handleNavigate = useCallback(
+    (path) => {
+      navigate(path);
+    },
+    [navigate]
+  );
 
   return (
     <Drawer
@@ -84,7 +104,10 @@ const SideBar = () => {
           </IconButton>
         </Box>
         <List>
-          {sideBarMenuListAdmin.map((menuItem) => {
+          {sideBarMenuList.map((menuItem) => {
+            if (!menuItem.visibleRoles.includes(loggedInUserRole)) {
+              return null;
+            }
             return (
               <ListItem
                 key={menuItem.label}

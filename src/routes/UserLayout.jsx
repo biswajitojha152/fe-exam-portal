@@ -1,4 +1,4 @@
-import React from "react";
+import { Fragment, Suspense } from "react";
 
 import { Box } from "@mui/material";
 import Header from "../features/header/Header";
@@ -10,7 +10,7 @@ import LoadingComponent from "../components/LoadingComponent";
 
 const UserLayout = () => {
   return (
-    <React.Fragment>
+    <Fragment>
       <Header />
       <Box>
         <SideBar />
@@ -26,12 +26,12 @@ const UserLayout = () => {
             },
           }}
         >
-          <React.Suspense fallback={<LoadingComponent open={true} />}>
+          <Suspense fallback={<LoadingComponent open={true} />}>
             <Outlet />
-          </React.Suspense>
+          </Suspense>
         </Box>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

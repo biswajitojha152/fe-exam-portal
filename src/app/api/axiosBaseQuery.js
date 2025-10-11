@@ -1,4 +1,5 @@
 import axios from "axios";
+import secureStorage from "../../helper/secureStorage";
 
 const axiosBaseQuery =
   ({ baseUrl } = { baseUrl: "" }) =>
@@ -26,9 +27,9 @@ const axiosBaseQuery =
 function getOptions() {
   try {
     return {
-      Authorization: sessionStorage.getItem("data")
-        ? `${JSON.parse(sessionStorage.getItem("data")).type} ${
-            JSON.parse(sessionStorage.getItem("data")).token
+      Authorization: secureStorage.getItem("data")
+        ? `${secureStorage.getItem("data").type} ${
+            secureStorage.getItem("data").token
           }`
         : null,
     };

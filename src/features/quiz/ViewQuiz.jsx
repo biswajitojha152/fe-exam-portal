@@ -1,14 +1,5 @@
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Divider,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
 import React from "react";
+import { Box, Divider, Grid, lighten, Paper, Typography } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ClassIcon from "@mui/icons-material/Class";
 import QuizIcon from "@mui/icons-material/Quiz";
@@ -19,23 +10,22 @@ import LoadingComponent from "../../components/LoadingComponent";
 
 import { useParams } from "react-router-dom";
 
-import { useGetAllCategoryQuery } from "../../services/category";
-import {
-  useGetAllQuestionsQuery,
-  useGetQuizByIdQuery,
-  useUpdateQuizMutation,
-} from "../../services/quiz";
+import { useGetAllQuestionsQuery } from "../../services/quiz";
 import AddQuestionForm from "./AddQuestionForm";
-import DOMPurify from "dompurify";
+import { toLetters } from "../../helper/helper";
+import RichTextEditor from "./RichTextEditor";
 
 const ViewQuiz = () => {
   const { quizId } = useParams("quizId");
-  const { data: questionList = [] } = useGetAllQuestionsQuery(quizId, {
+  const {
+    data: quiz = {
+      name: "",
+      questionDTOList: [],
+    },
+    isLoading,
+  } = useGetAllQuestionsQuery(quizId, {
     skip: !Boolean(quizId),
   });
-  const { data: quizDetails = {}, isLoading } = useGetQuizByIdQuery(quizId);
-  const { data: categoryList = [] } = useGetAllCategoryQuery();
-  const [updateQuiz, updateQuizRes] = useUpdateQuizMutation();
   const [snack, setSnack] = React.useState({
     open: false,
     message: "",
@@ -57,208 +47,149 @@ const ViewQuiz = () => {
         },
       ],
       data: {
-        label: quizDetails.name,
+        label: quiz.name,
         icon: <QuizIcon sx={{ mr: 0.5 }} fontSize="inherit" />,
       },
     }),
-    [quizDetails.name]
+    [quiz.name]
   );
-
-  const [formData, setFormData] = React.useState({
-    quizName: "",
-    description: "",
-    category: null,
-    categoryInputVal: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleQuizUpdate = (event) => {
-    event.preventDefault();
-
-    if (
-      !Boolean(formData.quizName.trim()) ||
-      !Boolean(formData.description.trim()) ||
-      !Boolean(formData.category) ||
-      !Boolean(formData.description.trim())
-    ) {
-      return setSnack({
-        open: true,
-        message: `All the fields are Required.`,
-        severity: "error",
-      });
-    }
-    updateQuiz({
-      id: quizDetails.id,
-      name: formData.quizName,
-      description: formData.description,
-      active: quizDetails.active,
-    })
-      .unwrap()
-      .then((res) => {
-        setSnack({
-          open: true,
-          message: res.message,
-          severity: "success",
-        });
-      })
-      .catch((err) => {
-        setSnack({
-          open: true,
-          message: err.data?.message || err.data,
-          severity: "error",
-        });
-      });
-  };
-
-  React.useEffect(() => {
-    setFormData({
-      quizName: quizDetails.name || "",
-      description: quizDetails.description || "",
-      category:
-        categoryList.find(
-          (category) => category.id === quizDetails.categoryId
-        ) || null,
-      categoryInputVal:
-        categoryList.find((category) => category.id === quizDetails.categoryId)
-          ?.name || "",
-    });
-  }, [quizDetails, categoryList]);
 
   return (
     <React.Fragment>
       <TopViewNav topViewNavData={topViewNavData} />
       <Box sx={{ mt: 2 }}>
-        <Box component="form" onSubmit={handleQuizUpdate}>
-          <Button
-            variant="contained"
-            sx={{ display: "block", marginLeft: "auto" }}
-            color="secondary"
-            type="submit"
-          >
-            Update
-          </Button>
-          <Paper sx={{ p: 2, my: 1 }}>
-            {/* <Typography variant="h5" gutterBottom>
-              Update Quiz
-            </Typography> */}
-            <Grid container columnSpacing={2}>
-              <Grid item xs={12} sm={6} md={4} lg={3}>
-                <TextField
-                  disabled
-                  margin="dense"
-                  label="Quiz Name *"
-                  variant="standard"
-                  name="quizName"
-                  value={formData.quizName}
-                  onChange={handleChange}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={4} lg={3}>
-                <Autocomplete
-                  disabled
-                  options={categoryList}
-                  value={formData.category}
-                  onChange={(e, newVal) =>
-                    handleChange({
-                      target: { name: "category", value: newVal },
-                    })
-                  }
-                  inputValue={formData.categoryInputVal}
-                  onInputChange={(e, newVal) =>
-                    handleChange({
-                      target: { name: "categoryInputVal", value: newVal },
-                    })
-                  }
-                  getOptionLabel={(option) => option.name}
-                  clearOnEscape
-                  renderInput={(params) => (
-                    <TextField
-                      margin="dense"
-                      {...params}
-                      label="Select Category *"
-                      variant="standard"
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={4} lg={6}>
-                <TextField
-                  margin="dense"
-                  label="Description *"
-                  variant="standard"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  fullWidth
-                />
-              </Grid>
+        <RichTextEditor />
+        <AddQuestionForm />
+        <Box
+          sx={{
+            my: 2,
+            ".MuiBox-root": {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              p: 1,
+              borderRadius: 2,
+            },
+            ".MuiTypography-root": {
+              // fontWeight: "bold",
+              letterSpacing: 1,
+            },
+          }}
+        >
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={6} md={3} lg={2.4}>
+              <Box
+                sx={{
+                  border: (theme) => `2px solid ${theme.palette.info.light}`,
+                  color: (theme) => theme.palette.info.light,
+                  backgroundColor: (theme) =>
+                    lighten(theme.palette.info.light, 0.9),
+                }}
+              >
+                <Typography variant="h6">Total</Typography>
+                <Typography variant="h6">10</Typography>
+              </Box>
             </Grid>
-          </Paper>
-          <AddQuestionForm />
-          {questionList.map((question, index) => {
-            return (
-              <Paper key={question.id} sx={{ my: 1, p: 2 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: 1.5,
-                  }}
-                >
-                  <Box>
-                    <Typography>{`Q${index + 1}.`}</Typography>
-                  </Box>
-                  <Box sx={{ flexGrow: 1 }}>
-                    <Typography
-                      dangerouslySetInnerHTML={{
-                        __html: DOMPurify.sanitize(question.name),
-                      }}
-                      sx={{ mb: 2 }}
-                    />
-                    <Grid container spacing={2}>
-                      <Grid item xs={6}>
-                        <Typography>
-                          <span style={{ marginRight: 10 }}>{`1)`}</span>
-                          {question.option1}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Typography>
-                          <span style={{ marginRight: 10 }}>{`2)`}</span>
-                          {question.option2}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Typography>
-                          <span style={{ marginRight: 10 }}>{`3)`}</span>
-                          {question.option3}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Typography>
-                          <span style={{ marginRight: 10 }}>{`4)`}</span>
-                          {question.option4}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </Box>
-                <Divider sx={{ my: 2 }} />
-                <Box>
-                  <Typography>
-                    <span style={{ marginRight: 10 }}>Answer:</span>
-                    {question.answer}
-                  </Typography>
-                </Box>
-              </Paper>
-            );
-          })}
+            <Grid item xs={12} sm={6} md={3} lg={2.4}>
+              <Box
+                sx={{
+                  border: (theme) => `2px solid ${theme.palette.success.light}`,
+                  color: (theme) => theme.palette.success.light,
+                  backgroundColor: (theme) =>
+                    lighten(theme.palette.success.light, 0.9),
+                }}
+              >
+                <Typography variant="h6">Active</Typography>
+                <Typography variant="h6">10</Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3} lg={2.4}>
+              <Box
+                sx={{
+                  border: (theme) => `2px solid ${theme.palette.error.light}`,
+                  color: (theme) => theme.palette.error.light,
+                  backgroundColor: (theme) =>
+                    lighten(theme.palette.error.light, 0.9),
+                }}
+              >
+                <Typography variant="h6">InActive</Typography>
+                <Typography variant="h6">10</Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3} lg={2.4}>
+              <Box
+                sx={{
+                  border: (theme) => `2px solid ${theme.palette.primary.light}`,
+                  color: (theme) => theme.palette.primary.light,
+                  backgroundColor: (theme) =>
+                    lighten(theme.palette.primary.light, 0.9),
+                }}
+              >
+                <Typography variant="h6">Attemptable</Typography>
+                <Typography variant="h6">10</Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3} lg={2.4}>
+              <Box
+                sx={{
+                  border: (theme) => `2px solid ${theme.palette.warning.light}`,
+                  color: (theme) => theme.palette.warning.light,
+                  backgroundColor: (theme) =>
+                    lighten(theme.palette.warning.light, 0.9),
+                }}
+              >
+                <Typography variant="h6">Time</Typography>
+                <Typography variant="h6">1hr 30min</Typography>
+              </Box>
+            </Grid>
+          </Grid>
         </Box>
+        {quiz.questionDTOList.map((question, index) => {
+          return (
+            <Paper key={question.id} sx={{ my: 1, p: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 1.5,
+                }}
+              >
+                <Box>
+                  <Typography>{`Q${index + 1})`}</Typography>
+                </Box>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography sx={{ mb: 2, whiteSpace: "pre-wrap" }}>
+                    {question.name}
+                  </Typography>
+                  <Grid container spacing={2}>
+                    {question.optionDTOList.map((option, index) => {
+                      return (
+                        <Grid item xs={6} key={option.id}>
+                          <Typography
+                            sx={{ color: option.isCorrect ? "green" : "red" }}
+                          >
+                            <span style={{ marginRight: 10 }}>{`${toLetters(
+                              index + 1
+                            )})`}</span>
+                            {option.name}
+                          </Typography>
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
+                </Box>
+              </Box>
+              {/* <Divider sx={{ my: 2 }} />
+              <Box>
+                <Typography>
+                  <span style={{ marginRight: 10 }}>Answer:</span>
+                  {question.answer}
+                </Typography>
+              </Box> */}
+            </Paper>
+          );
+        })}
       </Box>
-      <LoadingComponent open={isLoading || updateQuizRes.isLoading} />
+      <LoadingComponent open={isLoading} />
       <SnackAlert snack={snack} setSnack={setSnack} />
     </React.Fragment>
   );

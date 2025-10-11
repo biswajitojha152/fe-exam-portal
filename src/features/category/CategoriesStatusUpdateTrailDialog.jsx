@@ -200,7 +200,7 @@ const CategoriesStatusUpdateTrailDialog = ({ open, handleClose }) => {
                           },
                         }}
                       >
-                        <TableCell colSpan={4}>
+                        <TableCell colSpan={5}>
                           {isLoading ? "Fetching data." : "No record found."}
                         </TableCell>
                       </TableRow>

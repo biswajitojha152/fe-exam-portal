@@ -160,21 +160,37 @@ const QuizTrailTable = () => {
           severity: "success",
           message: "Excel Export Success",
         });
-        exportToExcel(
-          res.data.map((trailData, index) => {
-            return {
-              "Sl No.": index + 1,
-              "Date & Time": moment(trailData.attemptedAt).format(
-                "DD/MM/YYYY, hh:mma"
-              ),
-              Username: trailData.username,
-              Category: trailData.quizDTO.categoryName,
-              Quiz: trailData.quizDTO.name,
-              Status: trailData.status,
-            };
-          }),
-          `Quiz_Trail_${moment().format("YYYY-MM-DD")}`
-        );
+        if (Boolean(res.totalElements)) {
+          exportToExcel(
+            res.data.map((trailData, index) => {
+              return {
+                "Sl No.": index + 1,
+                "Date & Time": moment(trailData.attemptedAt).format(
+                  "DD/MM/YYYY, hh:mma"
+                ),
+                Username: trailData.username,
+                Category: trailData.quizDTO.categoryName,
+                Quiz: trailData.quizDTO.name,
+                Status: trailData.status,
+              };
+            }),
+            `Quiz_Trail_${moment().format("YYYY-MM-DD")}`
+          );
+        } else {
+          exportToExcel(
+            [
+              {
+                "Sl No.": null,
+                "Date & Time": null,
+                Username: null,
+                Category: null,
+                Quiz: null,
+                Status: null,
+              },
+            ],
+            `Quiz_Trail_${moment().format("YYYY-MM-DD")}`
+          );
+        }
       })
       .catch((err) => {
         setSnack({
