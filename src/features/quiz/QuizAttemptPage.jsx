@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import ReactDOM from "react-dom";
 
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
@@ -24,16 +25,43 @@ import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { Divider } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
 import { useNavigate, useParams } from "react-router-dom";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
+import moment from "moment/moment";
+import { useSubmitQuizMutation } from "../../services/quiz";
+import LoadingComponent from "../../components/LoadingComponent";
+import SnackAlert from "../../components/SnackAlert";
+
+const formatTime = (seconds) => {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  return `${hrs.toString().padStart(2, "0")}:${mins
+    .toString()
+    .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+};
 
 const QuizAttemptPage = () => {
   const theme = useTheme();
   const stompClient = useStompClient();
   const { questionId, quizId } = useParams();
   const navigate = useNavigate();
+  const [submitQuiz, submitQuizRes] = useSubmitQuizMutation();
 
+  const [snack, setSnack] = React.useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
+  const [open, setOpen] = useState(false);
   const [quizInProgress, setQuizInProgress] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(0);
 
   console.log(quizInProgress, "quizProgress");
   const isBetweenExtraSmallAndLarge = useMediaQuery(
@@ -139,6 +167,10 @@ const QuizAttemptPage = () => {
     }
   }, [stompClient, quizId, questionId, quizInProgress, navigate]);
 
+  const handleOpenConfirmDialog = useCallback(() => {
+    setOpen(true);
+  }, []);
+
   const handleChange = useCallback(
     (value) => {
       if (stompClient) {
@@ -155,6 +187,25 @@ const QuizAttemptPage = () => {
     [stompClient, questionId]
   );
 
+  const handleClose = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  const handleSubmitQuiz = useCallback(() => {
+    submitQuiz()
+      .unwrap()
+      .then((res) => {
+        navigate(`/quiz/${quizId}/result`, { state: res });
+      })
+      .catch((err) => {
+        setSnack({
+          open: true,
+          message: err.data?.message || err.data,
+          severity: "error",
+        });
+      });
+  }, [submitQuiz, navigate, quizId]);
+
   // const handleClearResponse = useCallback(() => {
   //   if (stompClient) {
   //     stompClient.publish({
@@ -167,7 +218,6 @@ const QuizAttemptPage = () => {
   // }, [stompClient, questionId]);
 
   useSubscription("/user/queue/getQuizById", (message) => {
-    console.log(JSON.parse(message.body));
     setQuizInProgress(JSON.parse(message.body));
   });
 
@@ -179,6 +229,36 @@ const QuizAttemptPage = () => {
       });
     }
   }, [stompClient, questionId]);
+
+  useEffect(() => {
+    if (quizInProgress) {
+      const timeLeftToSet =
+        quizInProgress.quizDurationInSeconds -
+        moment(quizInProgress.lastFetchedTime).diff(
+          quizInProgress.quizStartTime,
+          "seconds"
+        );
+      setTimeLeft(timeLeftToSet >= 0 ? timeLeftToSet : 0);
+    }
+  }, [quizInProgress]);
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+
+    const timerId = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerId);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [timeLeft]);
+
+  console.log(timeLeft, "timeLeft");
 
   return quizInProgress ? (
     <Fragment>
@@ -247,8 +327,20 @@ const QuizAttemptPage = () => {
                 justifyContent: "center",
               }}
             >
-              <AccessAlarmIcon color="error" />
-              <Typography variant="h5">00:00:00</Typography>
+              <AccessAlarmIcon
+                color="error"
+                sx={{
+                  color: timeLeft <= 60 ? "error.main" : "success.main",
+                }}
+              />
+              <Typography
+                variant="h5"
+                sx={{
+                  color: timeLeft <= 60 ? "error.main" : "text.primary",
+                }}
+              >
+                {formatTime(timeLeft)}
+              </Typography>
             </Box>
             <Divider sx={{ my: 2 }} />
             <Typography variant="h6" gutterBottom>
@@ -395,6 +487,7 @@ const QuizAttemptPage = () => {
                   fontSize: 18,
                   letterSpacing: 1,
                 }}
+                onClick={handleOpenConfirmDialog}
               >
                 Submit
               </Button>
@@ -402,6 +495,29 @@ const QuizAttemptPage = () => {
           </Grid>
         </Grid>
       </Box>
+      {ReactDOM.createPortal(
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Confirm Submission</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to submit your quiz? After submission, your
+              responses will be recorded and you won’t be able to make any
+              changes.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} variant="contained" color="error">
+              Cancel
+            </Button>
+            <Button onClick={handleSubmitQuiz} variant="contained">
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>,
+        document.getElementById("portal")
+      )}
+      <LoadingComponent open={submitQuizRes.isLoading} />
+      <SnackAlert snack={snack} setSnack={setSnack} />
     </Fragment>
   ) : null;
 };

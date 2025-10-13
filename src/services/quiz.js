@@ -131,6 +131,12 @@ const quizApi = apiSlice.injectEndpoints({
         data: payload,
       }),
     }),
+    submitQuiz: build.mutation({
+      query: () => ({
+        url: config.apiName.submitQuiz,
+        method: "POST",
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -150,4 +156,5 @@ export const {
   useGetQuizzesStatusUpdateListQuery,
   useGetQuizInstructionsQuery,
   useStartQuizMutation,
+  useSubmitQuizMutation,
 } = quizApi;

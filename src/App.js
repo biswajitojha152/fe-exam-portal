@@ -23,6 +23,7 @@ const QuizInstructions = React.lazy(() =>
 const QuizAttemptPage = React.lazy(() =>
   import("./features/quiz/QuizAttemptPage")
 );
+const Result = React.lazy(() => import("./features/quiz/Result"));
 const WebSocket = React.lazy(() => import("./features/websocket/WebSocket"));
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
             <Route path="/quiz/:quizId">
               <Route path="instructions" element={<QuizInstructions />} />
               <Route path="attempt/:questionId" element={<QuizAttemptPage />} />
+              <Route path="result" element={<Result />} />
             </Route>
           </Route>
         </Routes>

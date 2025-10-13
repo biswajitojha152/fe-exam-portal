@@ -30,6 +30,7 @@ const config = Object.freeze({
     getQuizzesStatusUpdateList: "api/quiz/getQuizStatusUpdateAuditLog",
     getQuizInstructions: "api/quiz/getQuizInstructions",
     startQuiz: "api/quiz/startQuiz",
+    submitQuiz: "api/quiz/submitQuiz",
     // question
     saveQuestion: "api/question/saveQuestion",
     importQuestionsExcel: "api/question/importExcel",
