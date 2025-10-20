@@ -62,98 +62,106 @@ const QuizInstructions = () => {
   return (
     <Fragment>
       {isSuccess && (
-        <Paper
-          sx={{
-            p: {
-              xs: 2,
-              md: 4,
-            },
-            maxWidth: 800,
-            mt: {
-              xs: 0,
-              md: 4,
-            },
-            mx: "auto",
-          }}
-          variant="outlined"
-        >
-          <Typography
-            variant="h4"
-            align="center"
-            sx={{ fontWeight: "bold" }}
-            gutterBottom
+        <Box sx={{ p: 1 }}>
+          <Paper
+            sx={{
+              p: {
+                xs: 2,
+                md: 4,
+              },
+              maxWidth: 800,
+              mt: {
+                xs: 0,
+                md: 4,
+              },
+              mx: "auto",
+            }}
+            variant="outlined"
           >
-            Quiz Instructions
-          </Typography>
-          <Typography
-            variant="h5"
-            align="center"
-            sx={{ fontWeight: "bold" }}
-            gutterBottom
-          >
-            {quizInstructions.quizName}
-          </Typography>
-          <Typography variant="h6" color="text.secondary" gutterBottom>
-            {quizInstructions.quizDescription}
-          </Typography>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }} gutterBottom>
-              Total Questions: {quizInstructions.totalQuestions}
-            </Typography>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }} gutterBottom>
-              Time: {quizInstructions.duration}
-            </Typography>
-          </Box>
-          <Divider />
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              Instructions:
-            </Typography>
-            <List sx={{ px: 1 }}>
-              {quizInstructions.instructions.map((text, index) => (
-                <ListItem key={index} disablePadding>
-                  <ListItemText primary={`\u2022 ${text}`} />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-          <FormControlLabel
-            name="hasAgreedToInstructions"
-            control={
-              <Checkbox
-                checked={hasAgreedToInstructions}
-                onChange={(e) => setHasAgreedToInstructions(e.target.checked)}
-              />
-            }
-            label="I have read and understood the instructions."
-          />
-          <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
-            <Button
-              variant="contained"
-              color="error"
-              fullWidth
-              onClick={handleCancelStart}
+            <Typography
+              variant="h4"
+              align="center"
+              sx={{ fontWeight: "bold" }}
+              gutterBottom
             >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              disabled={!hasAgreedToInstructions}
-              sx={{
-                "&.Mui-disabled": {
-                  // color: "#FFFFFF",
-                  // backgroundColor: "rgba(25, 118, 210, 0.12)",
-                  background: "#B2E5F6",
-                  color: "#FFFFFF",
-                },
-              }}
-              fullWidth
-              onClick={handleStartQuiz}
+              Quiz Instructions
+            </Typography>
+            <Typography
+              variant="h5"
+              align="center"
+              sx={{ fontWeight: "bold" }}
+              gutterBottom
             >
-              Start Quiz
-            </Button>
-          </Box>
-        </Paper>
+              {quizInstructions.quizName}
+            </Typography>
+            <Typography variant="h6" color="text.secondary" gutterBottom>
+              {quizInstructions.quizDescription}
+            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }} gutterBottom>
+                Total Questions: {quizInstructions.totalQuestions}
+              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }} gutterBottom>
+                Time: {quizInstructions.duration} min
+              </Typography>
+            </Box>
+            <Divider />
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                Instructions:
+              </Typography>
+              <List sx={{ px: 1 }}>
+                {quizInstructions.instructions.map((text, index) => (
+                  <ListItem key={index} disablePadding>
+                    <ListItemText primary={`\u2022 ${text}`} />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+            <FormControlLabel
+              name="hasAgreedToInstructions"
+              control={
+                <Checkbox
+                  checked={hasAgreedToInstructions}
+                  onChange={(e) => setHasAgreedToInstructions(e.target.checked)}
+                />
+              }
+              label="I have read and understood the instructions."
+            />
+            <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
+              <Button
+                variant="contained"
+                color="error"
+                fullWidth
+                onClick={handleCancelStart}
+                sx={{
+                  textTransform: "none",
+                  fontSize: 18,
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                disabled={!hasAgreedToInstructions}
+                sx={{
+                  textTransform: "none",
+                  fontSize: 18,
+                  "&.Mui-disabled": {
+                    // color: "#FFFFFF",
+                    // backgroundColor: "rgba(25, 118, 210, 0.12)",
+                    background: "#B2E5F6",
+                    color: "#FFFFFF",
+                  },
+                }}
+                fullWidth
+                onClick={handleStartQuiz}
+              >
+                Start Quiz
+              </Button>
+            </Box>
+          </Paper>
+        </Box>
       )}
       <LoadingComponent open={isLoading || startQuizRes.isLoading} />
       <SnackAlert snack={snack} setSnack={setSnack} />
