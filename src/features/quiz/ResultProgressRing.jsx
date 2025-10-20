@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
-
+import { Box, Typography, useTheme } from "@mui/material";
+import { PASSED, FAILED } from "../../helper/constants";
 const ResultProgressRing = ({
   percentage = 0,
-  status = "fail",
+  status = FAILED,
   size = 140,
   thickness = 12,
 }) => {
+  const theme = useTheme();
   const [offset, setOffset] = useState(0);
 
   const radius = (size - thickness) / 2;
   const circumference = 2 * Math.PI * radius;
 
-  const color = status === "pass" ? "#2e7d32" : "#d32f2f";
+  const color =
+    status === PASSED ? theme.palette.success.main : theme.palette.error.main;
 
   useEffect(() => {
     const progressOffset = circumference - (percentage / 100) * circumference;
@@ -30,9 +32,7 @@ const ResultProgressRing = ({
         justifyContent: "center",
       }}
     >
-      {/* SVG Circle */}
       <svg width={size} height={size}>
-        {/* Background circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -41,7 +41,6 @@ const ResultProgressRing = ({
           strokeWidth={thickness}
           fill="none"
         />
-        {/* Progress circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -56,8 +55,6 @@ const ResultProgressRing = ({
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
       </svg>
-
-      {/* Centered percentage text */}
       <Typography
         variant="h6"
         sx={{
