@@ -44,13 +44,13 @@ const Result = () => {
 
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
-    doc.text(`Username: ${result.username}`, 20, 40);
-    doc.text(`Quiz Title: ${result.quizDTO.name}`, 20, 50);
-    doc.text(`Category: ${result.quizDTO.categoryName}`, 20, 60);
+    doc.text(`Username: ${result.username}`, 20, 35);
+    doc.text(`Quiz Title: ${result.quizDTO.name}`, 20, 45);
+    doc.text(`Category: ${result.quizDTO.categoryName}`, 20, 55);
     doc.text(
       `Date: ${moment(result.attemptedAt).format("DD MMM YYYY, hh:mmA")}`,
       20,
-      70
+      65
     );
 
     doc.line(20, 75, 190, 75);
