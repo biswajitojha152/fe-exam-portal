@@ -19,8 +19,13 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import CloseIcon from "@mui/icons-material/Close";
 
 import secureStorage from "../../helper/secureStorage";
+import { Button } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { setTheme } from "./headerSlice";
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const mode = useSelector((state) => state.header.theme);
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationEl, setNotificationEl] = useState(null);
   const openNotification = useMemo(() => {
@@ -48,6 +53,10 @@ const Header = () => {
   const handleCloseNotification = useCallback((e) => {
     setNotificationEl(null);
   }, []);
+
+  const handleToggleTheme = useCallback(() => {
+    dispatch(setTheme(mode === "dark" ? "light" : "dark"));
+  }, [dispatch, mode]);
 
   return (
     <AppBar
@@ -86,6 +95,13 @@ const Header = () => {
               justifyContent: "flex-end",
             }}
           >
+            <Button
+              variant="contained"
+              size="small"
+              onClick={handleToggleTheme}
+            >
+              Theme Toggler
+            </Button>
             <IconButton
               size="large"
               sx={{
