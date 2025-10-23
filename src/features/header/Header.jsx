@@ -55,7 +55,12 @@ const Header = () => {
   }, []);
 
   const handleToggleTheme = useCallback(() => {
-    dispatch(setTheme(mode === "dark" ? "light" : "dark"));
+    const isDarkTheme = mode === "dark";
+    secureStorage.setItem("data", {
+      ...secureStorage.getItem("data"),
+      isDarkTheme: !isDarkTheme,
+    });
+    dispatch(setTheme(isDarkTheme ? "light" : "dark"));
   }, [dispatch, mode]);
 
   return (

@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import secureStorage from "../../helper/secureStorage";
 
 const initialState = {
-  theme: "dark",
+  theme: getTheme(),
 };
 
 const headerSlice = createSlice({
@@ -13,6 +14,18 @@ const headerSlice = createSlice({
     },
   },
 });
+
+function getTheme() {
+  try {
+    return secureStorage.getItem("data") &&
+      secureStorage.getItem("data").isDarkTheme
+      ? "dark"
+      : "light";
+  } catch (err) {
+    console.error(err.message);
+    return "light";
+  }
+}
 
 export const { setTheme } = headerSlice.actions;
 
