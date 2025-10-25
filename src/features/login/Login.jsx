@@ -25,6 +25,8 @@ import SnackAlert from "../../components/SnackAlert";
 import { useLoginMutation } from "../../services/login";
 
 import secureStorage from "../../helper/secureStorage";
+import { useDispatch } from "react-redux";
+import { setTheme } from "../header/headerSlice";
 
 function Copyright(props) {
   return (
@@ -59,6 +61,7 @@ const validationSchema = Yup.object().shape({
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [login, loginResponse] = useLoginMutation();
   const [snack, setSnack] = React.useState({
     open: false,
@@ -78,6 +81,7 @@ export default function SignIn() {
       })
         .unwrap()
         .then((res) => {
+          dispatch(setTheme(res.isDarkTheme ? "dark" : "light"));
           secureStorage.setItem("data", res);
           navigate("/dashboard");
         })

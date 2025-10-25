@@ -9,7 +9,13 @@ const usersApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    toggleTheme: build.mutation({
+      query: () => ({
+        url: config.apiName.toggleTheme,
+        method: "POST",
+      }),
+    }),
   }),
 });
 
-export const { useGetAllUserQuery } = usersApi;
+export const { useGetAllUserQuery, useToggleThemeMutation } = usersApi;

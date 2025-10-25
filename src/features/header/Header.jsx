@@ -22,9 +22,11 @@ import secureStorage from "../../helper/secureStorage";
 import { Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setTheme } from "./headerSlice";
+import { useToggleThemeMutation } from "../../services/users";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const [toggleTheme] = useToggleThemeMutation();
   const mode = useSelector((state) => state.header.theme);
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationEl, setNotificationEl] = useState(null);
@@ -60,8 +62,9 @@ const Header = () => {
       ...secureStorage.getItem("data"),
       isDarkTheme: !isDarkTheme,
     });
+    toggleTheme();
     dispatch(setTheme(isDarkTheme ? "light" : "dark"));
-  }, [dispatch, mode]);
+  }, [dispatch, mode, toggleTheme]);
 
   return (
     <AppBar

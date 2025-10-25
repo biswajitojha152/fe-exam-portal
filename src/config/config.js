@@ -8,6 +8,7 @@ const config = Object.freeze({
     login: "api/auth/signIn",
     // user
     getAllUser: "api/user/getAllUser",
+    toggleTheme: "api/user/toggleTheme",
     // dashboard
     getDashboardData: "api/dashboard/getDashboardSummary",
     getQuizTrail: "api/dashboard/getQuizTrail",
