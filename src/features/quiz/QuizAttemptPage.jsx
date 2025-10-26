@@ -206,19 +206,12 @@ const QuizAttemptPage = () => {
       });
   }, [submitQuiz, navigate, quizId]);
 
-  // const handleClearResponse = useCallback(() => {
-  //   if (stompClient) {
-  //     stompClient.publish({
-  //       destination: "/app/question/handleClearResponse",
-  //       body: JSON.stringify({
-  //         questionId: questionId,
-  //       }),
-  //     });
-  //   }
-  // }, [stompClient, questionId]);
-
   useSubscription("/user/queue/getQuizById", (message) => {
     setQuizInProgress(JSON.parse(message.body));
+  });
+
+  useSubscription("/user/queue/autoSubmitQuiz", (message) => {
+    navigate(`/quiz/${quizId}/result`, { state: JSON.parse(message.body) });
   });
 
   useEffect(() => {
