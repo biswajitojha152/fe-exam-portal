@@ -31,11 +31,11 @@ const Result = React.lazy(() => import("./features/quiz/Result"));
 const WebSocket = React.lazy(() => import("./features/websocket/WebSocket"));
 
 function App() {
-  const mode = useSelector((state) => state.header.theme);
+  const isDarkTheme = useSelector((state) => state.header.isDarkTheme);
 
   const appTheme = createTheme({
     palette: {
-      mode,
+      mode: isDarkTheme ? "dark" : "light",
     },
   });
 

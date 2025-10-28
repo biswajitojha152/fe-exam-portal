@@ -12,22 +12,27 @@ import Avatar from "@mui/material/Avatar";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 
-import Logout from "@mui/icons-material/Logout";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import BedtimeIcon from "@mui/icons-material/Bedtime";
 import CloseIcon from "@mui/icons-material/Close";
+import EmailIcon from "@mui/icons-material/Email";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import LockIcon from "@mui/icons-material/Lock";
 
 import secureStorage from "../../helper/secureStorage";
-import { Button } from "@mui/material";
+import Switch from "@mui/material/Switch";
 import { useDispatch, useSelector } from "react-redux";
-import { setTheme } from "./headerSlice";
+import { setIsDarkTheme } from "./headerSlice";
 import { useToggleThemeMutation } from "../../services/users";
+import apiSlice from "../../app/api/apiSlice";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [toggleTheme] = useToggleThemeMutation();
-  const mode = useSelector((state) => state.header.theme);
+  const isDarkTheme = useSelector((state) => state.header.isDarkTheme);
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationEl, setNotificationEl] = useState(null);
   const openNotification = useMemo(() => {
@@ -39,7 +44,17 @@ const Header = () => {
     () => secureStorage.getItem("data")?.firstName || null,
     []
   );
+  const lastName = useMemo(
+    () => secureStorage.getItem("data")?.lastName || null,
+    []
+  );
+  const email = useMemo(() => secureStorage.getItem("data").email, []);
+  const username = useMemo(() => secureStorage.getItem("data").username, []);
   const role = useMemo(() => secureStorage.getItem("data")?.role || null, []);
+  const joiningDate = useMemo(
+    () => secureStorage.getItem("data").joiningDate,
+    []
+  );
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -57,14 +72,19 @@ const Header = () => {
   }, []);
 
   const handleToggleTheme = useCallback(() => {
-    const isDarkTheme = mode === "dark";
     secureStorage.setItem("data", {
       ...secureStorage.getItem("data"),
       isDarkTheme: !isDarkTheme,
     });
     toggleTheme();
-    dispatch(setTheme(isDarkTheme ? "light" : "dark"));
-  }, [dispatch, mode, toggleTheme]);
+    dispatch(setIsDarkTheme(!isDarkTheme));
+  }, [dispatch, isDarkTheme, toggleTheme]);
+
+  const handleLogout = useCallback(() => {
+    sessionStorage.clear();
+    dispatch(apiSlice.util.resetApiState());
+    navigate("/login");
+  }, [navigate, dispatch]);
 
   return (
     <AppBar
@@ -103,13 +123,6 @@ const Header = () => {
               justifyContent: "flex-end",
             }}
           >
-            <Button
-              variant="contained"
-              size="small"
-              onClick={handleToggleTheme}
-            >
-              Theme Toggler
-            </Button>
             <IconButton
               size="large"
               sx={{
@@ -209,21 +222,82 @@ const Header = () => {
               id="account-menu"
               open={open}
               onClose={handleClose}
-              onClick={handleClose}
+              onClick={() => {}}
             >
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
+              <Box sx={{ width: 300, py: 1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    px: 2,
+                  }}
+                >
                   <Avatar />
-                </ListItemIcon>
-                Profile
-              </MenuItem>
-              <Divider />
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                  <Logout fontSize="small" />
-                </ListItemIcon>
-                Logout
-              </MenuItem>
+                  <Box>
+                    <Typography variant="h6" color="text.primary">
+                      {`${firstName} ${lastName}`}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {role}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Divider sx={{ my: 2 }} />
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                    ".MuiBox-root": {
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      color: "text.secondary",
+                      px: 2,
+                    },
+                  }}
+                >
+                  <Box>
+                    <EmailIcon />
+                    <Typography>{email}</Typography>
+                  </Box>
+                  <Box>
+                    <Typography sx={{ fontSize: 23 }}>@</Typography>
+                    <Typography>{username}</Typography>
+                  </Box>
+                  <Box>
+                    <CalendarTodayIcon />
+                    <Typography>{joiningDate}</Typography>
+                  </Box>
+                </Box>
+                <Divider sx={{ mt: 2, mb: 1 }} />
+                <MenuItem onClick={handleToggleTheme}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      alignItems: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <BedtimeIcon />
+                    <Typography>Dark Mode</Typography>
+                    <Switch
+                      sx={{ ml: "auto", pointerEvents: "none" }}
+                      checked={isDarkTheme}
+                      onChange={() => {}}
+                    />
+                  </Box>
+                </MenuItem>
+                <Divider sx={{ mt: 1, mb: 1 }} />
+                <MenuItem sx={{ px: 2, py: 1 }} onClick={handleLogout}>
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                    <LockIcon />
+                    <Typography>Logout</Typography>
+                  </Box>
+                </MenuItem>
+              </Box>
             </MenuComp>
           </Box>
         </Toolbar>
@@ -239,17 +313,17 @@ const MenuComp = memo(function (props) {
       {...props}
       slotProps={{
         paper: {
+          variant: "outlined",
           elevation: 0,
           sx: {
-            borderRadius: 3,
+            borderRadius: 1,
             overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            // filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            boxShadow: (theme) => theme.shadows[2],
             mt: 1.5,
             "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
+              width: 45,
+              height: 45,
             },
             "&:before": {
               content: '""',

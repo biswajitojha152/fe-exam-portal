@@ -26,7 +26,7 @@ import { useLoginMutation } from "../../services/login";
 
 import secureStorage from "../../helper/secureStorage";
 import { useDispatch } from "react-redux";
-import { setTheme } from "../header/headerSlice";
+import { setIsDarkTheme } from "../header/headerSlice";
 
 function Copyright(props) {
   return (
@@ -81,7 +81,7 @@ export default function SignIn() {
       })
         .unwrap()
         .then((res) => {
-          dispatch(setTheme(res.isDarkTheme ? "dark" : "light"));
+          dispatch(setIsDarkTheme(res.isDarkTheme));
           secureStorage.setItem("data", res);
           navigate("/dashboard");
         })
