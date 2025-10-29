@@ -27,6 +27,7 @@ import { setIsDarkTheme } from "./headerSlice";
 import { useToggleThemeMutation } from "../../services/users";
 import apiSlice from "../../app/api/apiSlice";
 import { useNavigate } from "react-router-dom";
+import moment from "moment/moment";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -268,7 +269,9 @@ const Header = () => {
                   </Box>
                   <Box>
                     <CalendarTodayIcon />
-                    <Typography>{joiningDate}</Typography>
+                    <Typography>
+                      {moment(joiningDate).format("DD MMM YYYY")}
+                    </Typography>
                   </Box>
                 </Box>
                 <Divider sx={{ mt: 2, mb: 1 }} />
