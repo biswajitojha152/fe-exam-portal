@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, memo } from "react";
+import ReactDOM from "react-dom";
 
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -28,11 +29,20 @@ import { useToggleThemeMutation } from "../../services/users";
 import apiSlice from "../../app/api/apiSlice";
 import { useNavigate } from "react-router-dom";
 import moment from "moment/moment";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [toggleTheme] = useToggleThemeMutation();
+  const [isLogoutCofirmationDialog, setIsLogoutCofirmationDialog] =
+    useState(false);
   const isDarkTheme = useSelector((state) => state.header.isDarkTheme);
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationEl, setNotificationEl] = useState(null);
@@ -80,6 +90,14 @@ const Header = () => {
     toggleTheme();
     dispatch(setIsDarkTheme(!isDarkTheme));
   }, [dispatch, isDarkTheme, toggleTheme]);
+
+  const handleOpenLogoutConfirmationDialog = useCallback(() => {
+    setIsLogoutCofirmationDialog(true);
+  }, []);
+
+  const handleCloseLogoutConfirmationDialog = useCallback(() => {
+    setIsLogoutCofirmationDialog(false);
+  }, []);
 
   const handleLogout = useCallback(() => {
     sessionStorage.clear();
@@ -294,7 +312,10 @@ const Header = () => {
                   </Box>
                 </MenuItem>
                 <Divider sx={{ mt: 1, mb: 1 }} />
-                <MenuItem sx={{ px: 2, py: 1 }} onClick={handleLogout}>
+                <MenuItem
+                  sx={{ px: 2, py: 1 }}
+                  onClick={handleOpenLogoutConfirmationDialog}
+                >
                   <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                     <LockIcon />
                     <Typography>Logout</Typography>
@@ -305,9 +326,68 @@ const Header = () => {
           </Box>
         </Toolbar>
       </Container>
+      {ReactDOM.createPortal(
+        <LogoutCofirmationDialog
+          open={isLogoutCofirmationDialog}
+          onClose={handleCloseLogoutConfirmationDialog}
+          handleLogout={handleLogout}
+        />,
+        document.getElementById("portal")
+      )}
     </AppBar>
   );
 };
+
+const LogoutCofirmationDialog = memo(function (props) {
+  const { onClose, open, handleLogout } = props;
+
+  return (
+    <Dialog
+      onClose={onClose}
+      open={open}
+      maxWidth="xs"
+      fullWidth
+      sx={{
+        ".MuiDialog-container": {
+          alignItems: "flex-start",
+          mt: 20,
+        },
+      }}
+    >
+      <DialogTitle>
+        <Typography
+          sx={{ fontWeight: 600, letterSpacing: 0.5 }}
+          variant="h5"
+          align="center"
+        >
+          Confirm Logout
+        </Typography>
+      </DialogTitle>
+      <DialogContent>
+        <Typography color="text.secondary" align="center">
+          Are you sure you want to logout?
+        </Typography>
+      </DialogContent>
+      <DialogActions sx={{ justifyContent: "center", pb: 2.5 }}>
+        <Button
+          variant="outlined"
+          sx={{ textTransform: "none", fontSize: 18, px: 5 }}
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          sx={{ textTransform: "none", fontSize: 18, px: 5 }}
+          color="error"
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+});
 
 const MenuComp = memo(function (props) {
   return (
