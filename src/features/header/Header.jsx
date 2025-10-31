@@ -326,14 +326,16 @@ const Header = () => {
           </Box>
         </Toolbar>
       </Container>
-      {ReactDOM.createPortal(
-        <LogoutCofirmationDialog
-          open={isLogoutCofirmationDialog}
-          onClose={handleCloseLogoutConfirmationDialog}
-          handleLogout={handleLogout}
-        />,
-        document.getElementById("portal")
-      )}
+      <>
+        {ReactDOM.createPortal(
+          <LogoutCofirmationDialog
+            open={isLogoutCofirmationDialog}
+            onClose={handleCloseLogoutConfirmationDialog}
+            handleLogout={handleLogout}
+          />,
+          document.getElementById("portal")
+        )}
+      </>
     </AppBar>
   );
 };

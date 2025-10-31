@@ -22,6 +22,7 @@ const config = Object.freeze({
       "api/category/getCategoryStatusUpdateAuditLog",
     // quiz
     getAllQuiz: "api/quiz/getAllQuiz",
+    getAllRecommendedQuiz: "api/quiz/getAllRecommendedQuiz",
     getQuizById: "api/quiz/getQuizById",
     createQuiz: "api/quiz/saveQuiz",
     updateQuiz: "api/quiz/updateQuiz",

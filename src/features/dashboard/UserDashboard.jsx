@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useCallback } from "react";
 
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -16,8 +16,20 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { useGetAllRecommendedQuizQuery } from "../../services/quiz";
+import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
+  const navigate = useNavigate();
+  const { data: recommendedQuizList = [] } = useGetAllRecommendedQuizQuery();
+
+  const handleStartQuiz = useCallback(
+    (quizId) => {
+      navigate(`/quiz/${quizId}/instructions`);
+    },
+    [navigate]
+  );
+
   return (
     <Fragment>
       <Typography variant="h5" fontWeight={600} mb={2} color="text.primary">
@@ -88,9 +100,9 @@ const UserDashboard = () => {
                 Recommended Quizzes
               </Typography>
               <Grid container spacing={1}>
-                {[1, 2, 3].map((quiz) => {
+                {recommendedQuizList.map((quiz) => {
                   return (
-                    <Grid item xs={12} key={quiz}>
+                    <Grid item xs={12} key={quiz.id}>
                       <Paper
                         sx={{
                           display: "flex",
@@ -102,10 +114,10 @@ const UserDashboard = () => {
                       >
                         <Box sx={{ flexGrow: 1 }}>
                           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            JavaScript Basics
+                            {quiz.name}
                           </Typography>
                           <Typography color="text.secondary">
-                            Programming &bull; 30 min
+                            {quiz.categoryName} &bull; {quiz.duration} min
                           </Typography>
                         </Box>
                         <Button
@@ -116,6 +128,7 @@ const UserDashboard = () => {
                             letterSpacing: 1,
                             whiteSpace: "nowrap",
                           }}
+                          onClick={() => handleStartQuiz(quiz.id)}
                         >
                           Start Now
                         </Button>

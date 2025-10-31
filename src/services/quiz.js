@@ -16,6 +16,13 @@ const quizApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["getAllQuiz"],
     }),
+    getAllRecommendedQuiz: build.query({
+      query: () => ({
+        url: config.apiName.getAllRecommendedQuiz,
+        method: "GET",
+      }),
+      providesTags: ["getAllRecommendedQuiz"],
+    }),
     createQuiz: build.mutation({
       query: (payload) => ({
         url: config.apiName.createQuiz,
@@ -24,6 +31,7 @@ const quizApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [
         "getAllQuiz",
+        "getAllRecommendedQuiz",
         "getAllCategory",
         "getQuizIdsWithQuizCount",
       ],
@@ -43,6 +51,7 @@ const quizApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [
         "getAllQuiz",
+        "getAllRecommendedQuiz",
         "getQuizById",
         "getQuizIdsWithQuizCount",
         "getQuizUpdateListById",
@@ -57,6 +66,7 @@ const quizApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [
         "getAllQuiz",
+        "getAllRecommendedQuiz",
         "getQuizById",
         "getQuizIdsWithQuizCount",
         "getAllCategory",
@@ -143,6 +153,7 @@ const quizApi = apiSlice.injectEndpoints({
 
 export const {
   useGetAllQuizQuery,
+  useGetAllRecommendedQuizQuery,
   useLazyGetAllQuizQuery,
   useCreateQuizMutation,
   useUpdateQuizMutation,
