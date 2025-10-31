@@ -18,10 +18,29 @@ import {
 } from "@mui/material";
 import { useGetAllRecommendedQuizQuery } from "../../services/quiz";
 import { useNavigate } from "react-router-dom";
+import LoadingComponent from "../../components/LoadingComponent";
+import { useGetQuizTrailQuery } from "../../services/dashboard";
+import moment from "moment";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
   const { data: recommendedQuizList = [] } = useGetAllRecommendedQuizQuery();
+  const {
+    data: quizTrail = {
+      totalPages: 0,
+      data: [],
+    },
+    isLoading,
+  } = useGetQuizTrailQuery({
+    fromDate: null,
+    toDate: null,
+    searchByUsername: null,
+    categoryId: null,
+    quizId: null,
+    status: null,
+    pageNo: 0,
+    pageSize: 3,
+  });
 
   const handleStartQuiz = useCallback(
     (quizId) => {
@@ -178,10 +197,10 @@ const UserDashboard = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {[1, 2, 3].map((activity) => {
+                    {quizTrail.data.map((activity) => {
                       return (
                         <TableRow
-                          key={activity}
+                          key={activity.id}
                           sx={{
                             "& > *": { border: "unset" },
                             ".MuiTableCell-root": {
@@ -196,10 +215,14 @@ const UserDashboard = () => {
                             },
                           }}
                         >
-                          <TableCell>World History</TableCell>
-                          <TableCell>90</TableCell>
-                          <TableCell>Apr 21, 2025</TableCell>
-                          <TableCell>Passed</TableCell>
+                          <TableCell>{activity.quizDTO.name}</TableCell>
+                          <TableCell>{activity.quizDTO.categoryName}</TableCell>
+                          <TableCell>
+                            {moment(activity.attemptedAt).format(
+                              "DD MMM YYYY, hh:mm A"
+                            )}
+                          </TableCell>
+                          <TableCell>{activity.status}</TableCell>
                         </TableRow>
                       );
                     })}
@@ -210,6 +233,7 @@ const UserDashboard = () => {
           </Grid>
         </Grid>
       </Grid>
+      <LoadingComponent open={isLoading} />
     </Fragment>
   );
 };
