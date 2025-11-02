@@ -17,6 +17,9 @@ const Login = React.lazy(() => import("./features/login/Login"));
 const DashboardRoute = React.lazy(() =>
   import("./features/dashboard/DashboardRoute")
 );
+const ViewAllActivity = React.lazy(() =>
+  import("./features/dashboard/ViewAllActivity")
+);
 const Users = React.lazy(() => import("./features/users/Users"));
 const Category = React.lazy(() => import("./features/category/Category"));
 const QuizRouter = React.lazy(() => import("./features/quiz/QuizRouter"));
@@ -28,6 +31,7 @@ const QuizAttemptPage = React.lazy(() =>
   import("./features/quiz/QuizAttemptPage")
 );
 const Result = React.lazy(() => import("./features/quiz/Result"));
+
 const WebSocket = React.lazy(() => import("./features/websocket/WebSocket"));
 
 function App() {
@@ -51,14 +55,16 @@ function App() {
               <Route element={<UserLayout />}>
                 <Route path="/websocket" element={<WebSocket />} />
                 <Route path="/dashboard" element={<DashboardRoute />} />
+                <Route
+                  path="/view-all-activity"
+                  element={<ViewAllActivity />}
+                />
                 <Route path="/users" element={<Users />} />
                 <Route path="/category" element={<Category />} />
                 <Route path="/quiz">
                   <Route index element={<QuizRouter />} />
                   <Route path=":quizId">
                     <Route index element={<ViewQuiz />} />
-                    {/* <Route path="instructions" element={<QuizInstructions />} />
-                <Route path="attempt" element={<QuizAttemptPage />} /> */}
                   </Route>
                 </Route>
               </Route>

@@ -156,8 +156,6 @@ const QuizUser = () => {
   const [fetchQuizList, fetchQuizListRes] = useLazyGetAllQuizQuery();
   const [quizList, setQuizList] = useState({
     data: [],
-    totalPages: 0,
-    totalElements: 0,
     isLastPage: false,
   });
   const { data: categoryList = [] } = useGetAllCategoryQuery();
@@ -199,15 +197,19 @@ const QuizUser = () => {
               map.set(quizData.id, quizData);
             });
           }
-          const finalQuizListToReturn = [];
-          map.forEach((value) => {
-            finalQuizListToReturn.push(value);
-          });
-          return { ...res, data: finalQuizListToReturn };
+          return { ...res, data: Array.from(map.values()) };
         });
       })
       .catch((err) => {
         console.log(err.data?.message || err.data);
+        setQuizList((prevData) =>
+          pageNo !== 0
+            ? prevData
+            : {
+                data: [],
+                isLastPage: true,
+              }
+        );
       });
   }, [fetchQuizList, pageNo, categoryQuery, searchQuery]);
 

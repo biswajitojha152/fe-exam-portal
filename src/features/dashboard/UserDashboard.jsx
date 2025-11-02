@@ -22,6 +22,11 @@ import LoadingComponent from "../../components/LoadingComponent";
 import { useGetQuizTrailQuery } from "../../services/dashboard";
 import moment from "moment";
 
+import { Link as RouterLink } from "react-router-dom";
+
+import { PASSED } from "../../helper/constants";
+import secureStorage from "../../helper/secureStorage";
+
 const UserDashboard = () => {
   const navigate = useNavigate();
   const { data: recommendedQuizList = [] } = useGetAllRecommendedQuizQuery();
@@ -52,7 +57,10 @@ const UserDashboard = () => {
   return (
     <Fragment>
       <Typography variant="h5" fontWeight={600} mb={2} color="text.primary">
-        Hi Ashoka 👋, ready for a new quiz?
+        Hi{" "}
+        {secureStorage.getItem("data") &&
+          secureStorage.getItem("data").firstName}{" "}
+        👋, ready for a new quiz?
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={3}>
@@ -109,7 +117,7 @@ const UserDashboard = () => {
 
         <Grid item xs={12}>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6} lg={5}>
               <Typography
                 variant="h5"
                 fontWeight={600}
@@ -157,7 +165,7 @@ const UserDashboard = () => {
                 })}
               </Grid>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6} lg={7}>
               <Box
                 sx={{
                   display: "flex",
@@ -173,7 +181,7 @@ const UserDashboard = () => {
                 >
                   Recent Activity
                 </Typography>
-                <Link href="/">
+                <Link to="/view-all-activity" component={RouterLink}>
                   <Typography>View All Activity</Typography>
                 </Link>
               </Box>
@@ -202,7 +210,7 @@ const UserDashboard = () => {
                         <TableRow
                           key={activity.id}
                           sx={{
-                            "& > *": { border: "unset" },
+                            // "& > *": { border: "unset" },
                             ".MuiTableCell-root": {
                               fontSize: "1rem",
                               letterSpacing: 1,
@@ -212,11 +220,22 @@ const UserDashboard = () => {
                               maxWidth: 160,
                               color: "text.secondary",
                               py: 2.28,
+                              "&:last-child": {
+                                color: (theme) =>
+                                  activity.status === PASSED
+                                    ? theme.palette.success.main
+                                    : theme.palette.error.main,
+                              },
                             },
                           }}
                         >
                           <TableCell>{activity.quizDTO.name}</TableCell>
-                          <TableCell>{activity.quizDTO.categoryName}</TableCell>
+                          <TableCell>
+                            {(activity.correctAnswer /
+                              activity.totalQuestions) *
+                              100}
+                            %
+                          </TableCell>
                           <TableCell>
                             {moment(activity.attemptedAt).format(
                               "DD MMM YYYY, hh:mm A"
