@@ -10,7 +10,8 @@ const config = Object.freeze({
     getAllUser: "api/user/getAllUser",
     toggleTheme: "api/user/toggleTheme",
     // dashboard
-    getDashboardData: "api/dashboard/getDashboardSummary",
+    getDashboardDataAdmin: "api/dashboard/getDashboardSummaryAdmin",
+    getDashboardDataUser: "api/dashboard/getDashboardSummaryUser",
     getQuizTrail: "api/dashboard/getQuizTrail",
     // category
     getAllCategory: "api/category/getAllCategories",

@@ -19,16 +19,28 @@ import {
 import { useGetAllRecommendedQuizQuery } from "../../services/quiz";
 import { useNavigate } from "react-router-dom";
 import LoadingComponent from "../../components/LoadingComponent";
-import { useGetQuizTrailQuery } from "../../services/dashboard";
+import {
+  useGetDashboardDataUserQuery,
+  useGetQuizTrailQuery,
+} from "../../services/dashboard";
 import moment from "moment";
 
 import { Link as RouterLink } from "react-router-dom";
 
 import { PASSED } from "../../helper/constants";
 import secureStorage from "../../helper/secureStorage";
+import { formatSecondsWithSuffix } from "../../helper/helper";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
+  const {
+    data: dashboardData = {
+      averageScore: 0,
+      bestScore: 0,
+      quizzesAttempted: 0,
+      totalTimeSpent: 0,
+    },
+  } = useGetDashboardDataUserQuery();
   const { data: recommendedQuizList = [] } = useGetAllRecommendedQuizQuery();
   const {
     data: quizTrail = {
@@ -67,7 +79,7 @@ const UserDashboard = () => {
           <Card variant="outlined">
             <CardContent>
               <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                {4}
+                {dashboardData.quizzesAttempted}
               </Typography>
               <Typography color="text.secondary" variant="h6">
                 Quizzes Attempted
@@ -80,7 +92,7 @@ const UserDashboard = () => {
           <Card variant="outlined">
             <CardContent>
               <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                {82.5}
+                {dashboardData.averageScore}
               </Typography>
               <Typography color="text.secondary" variant="h6">
                 Average Score
@@ -93,7 +105,7 @@ const UserDashboard = () => {
           <Card variant="outlined">
             <CardContent>
               <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                {95}
+                {dashboardData.bestScore}
               </Typography>
               <Typography color="text.secondary" variant="h6">
                 Best Score
@@ -106,7 +118,7 @@ const UserDashboard = () => {
           <Card variant="outlined">
             <CardContent>
               <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                {"1 hr 30 min"}
+                {formatSecondsWithSuffix(dashboardData.totalTimeSpent)}
               </Typography>
               <Typography color="text.secondary" variant="h6">
                 Total Time Spent

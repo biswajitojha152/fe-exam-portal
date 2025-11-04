@@ -3,9 +3,15 @@ import config from "../config/config";
 
 const dashboardApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
-    getDashboardData: build.query({
+    getDashboardDataAdmin: build.query({
       query: () => ({
-        url: config.apiName.getDashboardData,
+        url: config.apiName.getDashboardDataAdmin,
+        method: "GET",
+      }),
+    }),
+    getDashboardDataUser: build.query({
+      query: () => ({
+        url: config.apiName.getDashboardDataUser,
         method: "GET",
       }),
     }),
@@ -30,7 +36,8 @@ const dashboardApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useGetDashboardDataQuery,
+  useGetDashboardDataAdminQuery,
+  useGetDashboardDataUserQuery,
   useGetQuizTrailQuery,
   useLazyGetQuizTrailQuery,
 } = dashboardApi;

@@ -12,6 +12,20 @@ export function formatDuration(minutes) {
   }min`;
 }
 
+export function formatSecondsWithSuffix(seconds) {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  const parts = [];
+  if (hrs > 0) parts.push(`${hrs} hr${hrs > 1 ? "s" : ""}`);
+  if (mins > 0) parts.push(`${mins} min${mins > 1 ? "s" : ""}`);
+  if (secs > 0 || parts.length === 0)
+    parts.push(`${secs} sec${secs > 1 ? "s" : ""}`);
+
+  return parts.join(" ");
+}
+
 export function toLetters(num) {
   const mod = num % 26;
   let pow = (num / 26) | 0;

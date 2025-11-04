@@ -10,7 +10,7 @@ import DangerousIcon from "@mui/icons-material/Dangerous";
 
 import QuizTrailTable from "./QuizTrailTable";
 
-import { useGetDashboardDataQuery } from "../../services/dashboard";
+import { useGetDashboardDataAdminQuery } from "../../services/dashboard";
 
 import LoadingComponent from "../../components/LoadingComponent";
 import ChartComponent from "./ChartComponent";
@@ -131,7 +131,7 @@ const AdminDashboard = () => {
       },
     },
     isLoading,
-  } = useGetDashboardDataQuery();
+  } = useGetDashboardDataAdminQuery();
 
   return (
     <Fragment>
